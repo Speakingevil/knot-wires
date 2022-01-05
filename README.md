@@ -1,1 +1,1 @@
-# knot-wires
+#[ModKit Wiki](../../wiki)
