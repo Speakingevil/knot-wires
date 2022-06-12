@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,6 +99,7 @@ public class KnotWiresScript : MonoBehaviour {
         else
             for (int i = 0; i < 6; i++)
                 colints[i] = Random.Range(0, 7);
+        moduletype = 9;
         int t = Random.Range(0, 2);
         for (int i = 0; i < 20; i++)
             if (i / 2 != moduletype || i % 2 == t)
@@ -181,17 +182,17 @@ public class KnotWiresScript : MonoBehaviour {
                 int[] holdtimes = new int[2] { -1, -1 };
                 if (colints[3] == 6)
                     holdtimes[0] = 0;
-                else if (!colints.Where((x, i) => i < 3).Any(x => colints.Where((y, i) => i > 2).Contains(x)))
+                else if (!colints.Take(3).Any(x => colints.Skip(3).Contains(x)))
                     holdtimes[0] = 1;
                 else if (colints[4] == 0)
                     holdtimes[0] = 2;
                 else if (!colints.Contains(5))
                     holdtimes[0] = 3;
-                else if (new string[4] { "PRESS", "PUSH", "HOLD", "ABORT" }[buttonind].Any(x => modsn.Where((s, i) => i > 1).Contains(x)))
+                else if (new string[4] { "PRESS", "PUSH", "HOLD", "ABORT" }[buttonind].Any(x => modsn.Skip(2).Contains(x)))
                     holdtimes[0] = 4;
                 else if (battype == 2)
                     holdtimes[0] = 5;
-                else if (colints.Where((x, i) => i < 3).Distinct().Count() < 3)
+                else if (colints.Take(3).Distinct().Count() < 3)
                     holdtimes[0] = 6;
                 else if (buttonind == 3)
                     holdtimes[0] = 7;
@@ -211,7 +212,7 @@ public class KnotWiresScript : MonoBehaviour {
                     holdtimes[1] = 5;
                 else if (!colints.Where((x, i) => i != 4).Contains(colints[4]))
                     holdtimes[1] = 6;
-                else if (new string[4] { "PRESS", "PUSH", "HOLD", "ABORT" }[buttonind].Any(x => info.GetSerialNumberLetters().Where((s, i) => i > 1).Contains(x)))
+                else if (new string[4] { "PRESS", "PUSH", "HOLD", "ABORT" }[buttonind].Any(x => info.GetSerialNumberLetters().Contains(x)))
                     holdtimes[1] = 7;
                 else if (colints.Distinct().Count() == 4)
                     holdtimes[1] = 8;
@@ -367,7 +368,7 @@ public class KnotWiresScript : MonoBehaviour {
                         if (colints.Where((i, j) => j < 3).Where(x => x == 3).Count() == 1) { truth[0] = "T"; answer.Add(answer[0] + (Mathf.Abs(answer[0]) % 10) + ((Mathf.Abs(answer[0]) / 10) % 10) + (Mathf.Abs(answer[0]) / 100)); } else { truth[0] = "F"; answer.Add(answer[0]); }
                         answer.Add(((answer[1] / 100) * 100) + ((answer[1] / 10) % 10) + ((answer[1] % 10) * 10));
                         if (colints[3] % 3 == 0) { truth[2] = "T"; answer.Add(answer[2] * 2); } else { truth[2] = "F"; answer.Add(answer[2]); }
-                        if (colints[4] % 3 == 0) { truth[3] = "T"; answer.Add(100 - answer[3]); } else { truth[3] = "F"; answer.Add(answer[3] - 10); }
+                        if (colints[4] % 3 == 0) { truth[3] = "T"; answer.Add(100 - answer[3]); } else { truth[3] = "F"; answer.Add(answer[3]); }
                         break;
                     case 4:
                         answer.Add((answer[0] * answer[0]) % 100);
@@ -540,16 +541,16 @@ public class KnotWiresScript : MonoBehaviour {
                 if (colints.Where((x, i) => i < 3 && x < 3).Count() > 1) { pos[2]--; locconds[1][2] = true; } else if (colints.Where((x, i) => i < 3 && x == 6).Count() == 0) { pos[2]++; locconds[1][3] = true; }
                 for (int j = 0; j < 2; j++) {
                     if (!locconds[j].Contains(true)) Debug.LogFormat("[Knot Wires #{0}] No {1} conditions are true.", moduleID, new string[] { "start", "exit"}[j]);
-                    else Debug.LogFormat("[Knot Wires #{0}] {1} conditions {2} apply.", moduleID, new string[] { "Start", "Exit" }[j], string.Join(" and ", new string[] { "N", "S", "W", "E" }.Where((x, i) => locconds[j][i]).ToArray())); }
+                    else Debug.LogFormat("[Knot Wires #{0}] {1} conditions {2} apply.", moduleID, new string[] { "Start", "Exit" }[j], string.Join(" and ", new string[] { "W", "E", "N", "S" }.Where((x, i) => locconds[j][i]).ToArray())); }
                 string[][] logmaze = new string[15][] { new string[15], new string[15], new string[15], new string[15], new string[15], new string[15], new string[15], new string[15], new string[15], new string[15], new string[15], new string[15], new string[15], new string[15], new string[15]};
                 for(int i = 0; i < 15; i++)
                     for(int j = 0; j < 15; j++) {
                         if (i % 2 == 0)
                             if (j % 2 == 0) logmaze[i][j] = "╬";
-                            else logmaze[i][j] = maze[i, j] == 'X' ? "═" : "─";
+                            else logmaze[i][j] = maze[i, j] == 'X' ? "═" : "┼";
                         else
-                            if (j % 2 == 0) logmaze[i][j] = maze[i, j] == 'X' ? "║" : "│";
-                            else logmaze[i][j] = "  "; }
+                            if (j % 2 == 0) logmaze[i][j] = maze[i, j] == 'X' ? "║" : "┼";
+                            else logmaze[i][j] = "┼"; }
                 if (pos[0] == pos[2] && pos[1] == pos[3])
                     logmaze[(pos[0] * 2) + 1][(pos[1] * 2) + 1] = "U";
                 else
@@ -803,8 +804,8 @@ public class KnotWiresScript : MonoBehaviour {
                 sounds = Enumerable.Range(0, 30).ToArray().Shuffle().Take(10).ToArray();
                 Debug.LogFormat("[Knot Wires #{0}] The digits 0-9 are assigned to the following sounds:\n[Knot Wires #{0}] {1}", moduleID, string.Join("\n[Knot Wires #" + moduleID + "] ", sounds.Select((x, i) => i.ToString() + " = " + new string[30] { "A Mistake", "Battleship", "Boxing", "Broken Buttons", "Cheap Checkout", "Colored Squares", "Creation", "Double Expert", "Double-Oh", "Fast Math", "Graffiti Numbers", "The Heart", "Hogwarts", "The Hypercube", "Laundry", "Painting", "Quiz Buzz", "Qwirkle", "RGB Maze", "RPS Judging", "Simon Shifts", "Simon Shouts", "Sink", "Street Fighter", "The Screw", "The Swan", "Tennis", "Word Search", "Yahtzee", "Zoni"}[x]).ToArray()));
                 int[] rc = new int[2];
-                numalts[0] = Enumerable.Range(0, 6).Any(x => sounds.Count(y => y / 6 == x) % 6 == 0);
-                numalts[1] = Enumerable.Range(0, 5).Any(x => sounds.Count(y => y % 5 == x) % 5 == 0);
+                numalts[0] = Enumerable.Range(0, 5).Any(x => sounds.Count(y => y % 5 == x) % 5 == 0);
+                numalts[1] = Enumerable.Range(0, 6).Any(x => sounds.Count(y => y / 6 == x) % 6 == 0);
                 numalts[2] = sounds.Where(x => x < 25 && x % 5 < 4).Any(x => sounds.Contains(x + 1) && sounds.Contains(x + 5) && sounds.Contains(x + 6));
                 numalts[3] = sounds.Where(x => x < 20 && x % 5 < 3).Any(x => sounds.Contains(x + 2) && sounds.Contains(x + 10) && sounds.Contains(x + 12));
                 numalts[4] = modsn.Skip(2).Any(x => info.GetSerialNumberLetters().Contains(x));
@@ -861,7 +862,7 @@ public class KnotWiresScript : MonoBehaviour {
                     {
                         case 0:
                             answer.Add(colints.Take(3).Distinct().Count() - 1);
-                            answer.Add(Math.Max(0, Math.Min(2, colints.Count(x => x == initnums[1][6]))));
+                            answer.Add(Math.Min(2, colints.Count(x => x == initnums[1][6])));
                             break;
                         case 1:
                             if (modsn.Count(x => "AEIOU".Contains(x.ToString())) > 1) answer.Add(3);
@@ -1150,7 +1151,7 @@ public class KnotWiresScript : MonoBehaviour {
                                 case 19: accept = info.GetFormattedTime().Select(x => "123456789".Contains(x) ? x - '0' : 0).Sum() % 5 == 0; break;
                                 case 20: accept = info.GetFormattedTime().Select(x => "123456789".Contains(x) ? x - '0' : 0).GroupBy(x => x).All(x => x.Count() != 1 || x.Contains(0)); break;
                                 case 21: accept = info.GetFormattedTime().Select(x => "123456789".Contains(x) ? x - '0' : 0).Count(x => x % 2 == 1) % 2 == 1; break;
-                                case 22: accept = timedigs[3] == info.GetSolvedModuleNames().Count() % 10; break;
+                                case 22: accept = timedigs[3] == (info.GetSolvedModuleNames().Count() + 1) % 10; break;
                                 case 23: accept = Mathf.Abs(timedigs[2] - timedigs[3]) == 4; break;
                                 default: accept = timedigs[3] == new int[] { 1, 7, 6, 5, 2, 3, 4 }[colints[5]]; break;
                             }
@@ -1320,9 +1321,9 @@ public class KnotWiresScript : MonoBehaviour {
                                 case 9: next = ((int)info.GetTime() % 10) + (((int)info.GetTime() % 60) / 10) == 9; break;
                                 case 10: next = ((int)info.GetTime() % 10) + (((int)info.GetTime() % 60) / 10) == 7; break;
                                 case 11: next = ((int)info.GetTime() % 10) + (((int)info.GetTime() % 60) / 10) == 5; break;
-                                case 12: next = (int)info.GetTime() % 10 == initnums[0][initnums[1][0]] % 10; break;
-                                case 13: next = (int)info.GetTime() % 10 == initnums[0][initnums[1][3]] % 10; break;
-                                case 14: next = (int)info.GetTime() % 10 == initnums[0][initnums[1][6]] % 10; break;
+                                case 12: next = screenints[0] % 10 == initnums[0].OrderBy(x => x).First() % 10; break;
+                                case 13: next = screenints[0] % 10 == initnums[0].OrderBy(x => x).Skip(3).First() % 10; break;
+                                case 14: next = screenints[0] % 10 == initnums[0].OrderBy(x => x).Last() % 10; break;
                                 case 15: next = ((screenints[0] / 10) + (screenints[0] % 10)) % 10 == 5; break;
                                 case 16: next = Math.Abs((screenints[0] / 10) - (screenints[0] % 10)) == 5; break;
                                 case 17: next = screenints[0] / 10 == info.GetSerialNumberNumbers().Last() || screenints[0] % 10 == info.GetSerialNumberNumbers().Last(); break;
@@ -1362,6 +1363,8 @@ public class KnotWiresScript : MonoBehaviour {
                         }
                         break;
                 }
+                if (moduletype == 0)
+                    submissions.Clear();
                 screen.material = off;
                 displays[0].text = string.Empty;
                 dispnum = 0;
@@ -1432,10 +1435,8 @@ public class KnotWiresScript : MonoBehaviour {
                         else if (dispnum % 9 == 0)
                             forcenum[0] = Random.Range(0, 9);
                         else
-                        {
                             screenints[0] = Random.Range(1, 100);
-                            screenints[1] = Random.Range(0, 7);
-                        }
+                        screenints[1] = Random.Range(0, 7);
                         break;
                     case 2:
                         if (dispnum == forcenum[0])
@@ -1564,6 +1565,7 @@ public class KnotWiresScript : MonoBehaviour {
         }
         displays[0].text = "000";
         answer.Clear();
+        bigdig[1] = new int[3];
         string tlog = string.Join("", bigdig[0].Select(x => x.ToString()).ToArray());
         int temp = 0;
         if (numalts[0]) { temp = bigdig[0][0]; bigdig[0][0] = bigdig[0][1]; bigdig[0][1] = temp; tlog += " \u2192 " + string.Join("", bigdig[0].Select(x => x.ToString()).ToArray()); }
