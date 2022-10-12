@@ -28,6 +28,7 @@ public class KnotWiresScript : MonoBehaviour {
     public Material[] wiremats;
     public Material[] lits;
     public Material off;
+    public int forcenum;
 
     private static int[] nodup = new int[10] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }; 
     private bool cb;
@@ -68,6 +69,7 @@ public class KnotWiresScript : MonoBehaviour {
     private List<int>[] initnums = new List<int>[2] { new List<int> { }, new List<int> { } };
     private bool[][] shownum = new bool[2][] { new bool[7], new bool[7]};
     private int inittime;
+    private int[] zhold = new int[2];
 
     private static int moduleIDCounter;
     private int moduleID;
@@ -90,16 +92,20 @@ public class KnotWiresScript : MonoBehaviour {
     { 
         if (moduleIDCounter == moduleID)
             nodup.Shuffle();
-        if (moduleIDCounter - moduleID < 10)
-            moduletype = nodup[moduleIDCounter - moduleID];
+        if (forcenum < 0)
+        {
+            if (moduleIDCounter - moduleID < 10)
+                moduletype = nodup[moduleIDCounter - moduleID];
+            else
+                moduletype = Random.Range(0, 10);
+        }
         else
-            moduletype = Random.Range(0, 10);
+            moduletype = forcenum;
         if (moduletype == 7)
             colints = new int[] { 0, 1, 2, 3, 4, 5, 6 }.Shuffle().Take(6).ToArray();
         else
             for (int i = 0; i < 6; i++)
                 colints[i] = Random.Range(0, 7);
-        moduletype = 9;
         int t = Random.Range(0, 2);
         for (int i = 0; i < 20; i++)
             if (i / 2 != moduletype || i % 2 == t)
@@ -245,6 +251,7 @@ public class KnotWiresScript : MonoBehaviour {
                         break;
                     case 4:
                         for (int i = 1; i < 100; i++)
+                            if(i % 10 > 2)
                                 indconds[0][i - 1] = true;
                         break;
                     case 5:
@@ -359,7 +366,7 @@ public class KnotWiresScript : MonoBehaviour {
                         if (colints.Where((x, i) => i < 3).Distinct().Count() < 3) { truth[3] = "T"; answer.Add(answer[3] - ((Mathf.Abs(answer[3]) / 10) % 10)); } else { truth[3] = "F"; answer.Add(answer[3] + (Mathf.Abs(answer[3]) % 10)); }
                         break;
                     case 2:
-                        if (answer[0] % 10 > answer[0] / 10) { truth[0] = "T"; answer.Add((answer[0] % 10) * 10 + (answer[0] / 10)); } else { truth[0] = "F"; answer.Add(answer[0]); }
+                        if (answer[0] % 10 < answer[0] / 10) { truth[0] = "T"; answer.Add((answer[0] % 10) * 10 + (answer[0] / 10)); } else { truth[0] = "F"; answer.Add(answer[0]); }
                         if (buttonind < 2) { truth[1] = "T"; answer.Add(answer[1] + (info.GetPortCount() * 3) ); } else { truth[1] = "F"; answer.Add(answer[1] + (info.GetBatteryCount() * 3)); }
                         answer.Add(Mathf.Abs(answer[2] - answer[0]));
                         if (answer[3] < info.GetModuleNames().Count()) { truth[3] = "T"; answer.Add(answer[3] * 2); } else { truth[3] = "F"; answer.Add(answer[3]); }
@@ -372,15 +379,15 @@ public class KnotWiresScript : MonoBehaviour {
                         break;
                     case 4:
                         answer.Add((answer[0] * answer[0]) % 100);
-                        if (colints.Where(i => i > 2).Distinct().Count() == 3) { truth[1] = "T"; answer.Add(Mathf.Abs((answer[1] / 10) - (answer[1] % 10))); } else { truth[1] = "F"; answer.Add(answer[1] + (Mathf.Abs((answer[0] / 10) - (answer[0] % 10)))); };
+                        if (colints.Where((i, j) => j > 2).Distinct().Count() == 3) { truth[1] = "T"; answer.Add(answer[1] + Mathf.Abs((answer[1] / 10) - (answer[1] % 10))); } else { truth[1] = "F"; answer.Add(answer[1] + (Mathf.Abs((answer[0] / 10) - (answer[0] % 10)))); };
                         if (answer[2] / 10 > 5 || answer[2] % 10 > 5) { truth[2] = "T"; answer.Add(answer[2] - 11); } else { truth[2] = "F"; answer.Add(answer[2] + 9); };
-                        if (colints.Contains(4)) { truth[3] = "T"; answer.Add(answer[3] + info.GetPortPlateCount() + info.GetIndicators().Count() + info.GetBatteryHolderCount()); } else answer.Add(3);
+                        if (colints.Contains(4)) { truth[3] = "T"; answer.Add(answer[3] + info.GetPortPlateCount() + info.GetIndicators().Count() + info.GetBatteryHolderCount()); } else { truth[3] = "F"; answer.Add(answer[3]); }
                         break;
                     default:
-                        if (colints.Where(i => i < 5).Contains(colints[5])) { truth[0] = "T"; answer.Add(answer[0] + info.GetSerialNumberNumbers().Sum()); } else { truth[0] = "F"; answer.Add(answer[0] + info.GetSerialNumberNumbers().Aggregate(1, (i, j) => i * j)); }
+                        if (colints.Where((i, j) => j < 5).Contains(colints[5])) { truth[0] = "T"; answer.Add(answer[0] + info.GetSerialNumberNumbers().Sum()); } else { truth[0] = "F"; answer.Add(answer[0] + info.GetSerialNumberNumbers().Aggregate(1, (i, j) => i * j)); }
                         if ((battype == 0 && info.GetBatteryCount() > info.GetBatteryHolderCount()) || (battype == 2 && info.GetBatteryCount() < info.GetBatteryHolderCount() * 2)) { truth[1] = "T"; answer.Add(answer[1] + (answer[2] % 10) * 3); } else { truth[1] = "F"; answer.Add(answer[1]); }
                         answer.Add((answer[2] / 100) + ((answer[2] / 10) % 10) + (answer[2] % 10));
-                        if (modsn.Any(i => "IE".Contains(i))) { truth[3] = "T";  answer.Add(answer[3] * 4); } else { truth[3] = "F"; answer.Add(answer[3] * 6); }
+                        if (modsn.Contains("K")) { truth[3] = "T";  answer.Add(answer[3] * 4); } else { truth[3] = "F"; answer.Add(answer[3] * 6); }
                         break;
                 }
                 Debug.Log("[Knot Wires #" + moduleID + "] " + string.Join("\n[Knot Wires #" + moduleID + "] ", answer.Take(4).Select((x, i) => truth[i] + ": " + x + " \u2192 " + answer[i + 1]).ToArray()));
@@ -535,7 +542,7 @@ public class KnotWiresScript : MonoBehaviour {
                     Debug.LogFormat("[Knot Wires #{0}] The exit colour is {1}.", moduleID, new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white" }[colints[4]]);
                 }
                 bool[][] locconds = new bool[2][] { new bool[4], new bool[4] };
-                if (modsn.Contains("L")) { pos[1]--; locconds[0][0] = true; } else if (modsn.Contains("F")) { pos[1]++; locconds[0][1] = true; }
+                if (modsn.Contains("F")) { pos[1]--; locconds[0][0] = true; } else if (modsn.Contains("L")) { pos[1]++; locconds[0][1] = true; }
                 if (battype == 1) { pos[0]--; locconds[0][2] = true; } else if (battype == 3) { pos[0]++; locconds[0][3] = true; }
                 if (buttonind == 2) { pos[3]--; locconds[1][0] = true; } else if (buttonind == 3) { pos[3]++; locconds[1][1] = true; }
                 if (colints.Where((x, i) => i < 3 && x < 3).Count() > 1) { pos[2]--; locconds[1][2] = true; } else if (colints.Where((x, i) => i < 3 && x == 6).Count() == 0) { pos[2]++; locconds[1][3] = true; }
@@ -555,8 +562,8 @@ public class KnotWiresScript : MonoBehaviour {
                     logmaze[(pos[0] * 2) + 1][(pos[1] * 2) + 1] = "U";
                 else
                 {
-                    logmaze[(pos[0] * 2) + 1][(pos[1] * 2) + 1] = "S";
-                    logmaze[(pos[2] * 2) + 1][(pos[3] * 2) + 1] = "E";
+                    logmaze[(pos[0] * 2) + 1][(pos[1] * 2) + 1] = "S ";
+                    logmaze[(pos[2] * 2) + 1][(pos[3] * 2) + 1] = "E ";
                 }
                 Debug.LogFormat("[Knot Wires #{0}] The maze has the following configuration:\n[Knot Wires #{0}] {1}", moduleID, string.Join("\n[Knot Wires #" + moduleID + "] ", logmaze.Select(i => string.Join("", i)).ToArray()));
                 if (pos[0] != pos[2] || pos[1] != pos[3])
@@ -566,7 +573,7 @@ public class KnotWiresScript : MonoBehaviour {
                     int[] conds = new int[3];
                     if (colints.Where(x => x == 6).Count() > 1) dir[0] = (rotations[0] - rotations[4] + 6) % 4;
                     else if (colints.Where((x, i) => i < 3 && x == 2).Count() == 0) { conds[0] = 1; dir[0] = (rotations[2] - rotations[4] + 4) % 4; }
-                    else if ((rotations[0] - rotations[1] + 4) % 4 == 2) { conds[0] = 2; dir[0] = (rotations[3] - rotations[4] + 4) % 4; }
+                    else if (modsn.Contains("H")) { conds[0] = 2; dir[0] = (rotations[3] - rotations[4] + 4) % 4; }
                     else { conds[0] = 3; dir[0] = 0; }
                     if (battype < 2 && colints[4] < 3) dir[1] = (dir[0] + 2) % 4;
                     else if (battype > 1 && colints[4] > 2 && colints[4] != 6) { conds[1] = 1;  dir[1] = (rotations[0] - rotations[4] + 4) % 4; }
@@ -622,10 +629,10 @@ public class KnotWiresScript : MonoBehaviour {
                 Debug.LogFormat("[Knot Wires #{0}] The initial string of morse code is \"{1}\".", moduleID, morsestring);
                 if(morsestring.Length >= snvals[2] + snvals[5])
                 {
-                    if (buttonind >= 2)
+                    if (buttonind < 2)
                         morsestring.Reverse();
                     morsestring = string.Join("", morsestring.Take(snvals[2] + snvals[5]).Reverse().Concat(morsestring.Skip(snvals[2] + snvals[5])).Select(x => x.ToString()).ToArray());
-                    if (buttonind >= 2)
+                    if (buttonind < 2)
                         morsestring.Reverse();
                 }
                 if (snvals[2] > 0 && snvals[5] > 0)
@@ -804,8 +811,8 @@ public class KnotWiresScript : MonoBehaviour {
                 sounds = Enumerable.Range(0, 30).ToArray().Shuffle().Take(10).ToArray();
                 Debug.LogFormat("[Knot Wires #{0}] The digits 0-9 are assigned to the following sounds:\n[Knot Wires #{0}] {1}", moduleID, string.Join("\n[Knot Wires #" + moduleID + "] ", sounds.Select((x, i) => i.ToString() + " = " + new string[30] { "A Mistake", "Battleship", "Boxing", "Broken Buttons", "Cheap Checkout", "Colored Squares", "Creation", "Double Expert", "Double-Oh", "Fast Math", "Graffiti Numbers", "The Heart", "Hogwarts", "The Hypercube", "Laundry", "Painting", "Quiz Buzz", "Qwirkle", "RGB Maze", "RPS Judging", "Simon Shifts", "Simon Shouts", "Sink", "Street Fighter", "The Screw", "The Swan", "Tennis", "Word Search", "Yahtzee", "Zoni"}[x]).ToArray()));
                 int[] rc = new int[2];
-                numalts[0] = Enumerable.Range(0, 5).Any(x => sounds.Count(y => y % 5 == x) % 5 == 0);
-                numalts[1] = Enumerable.Range(0, 6).Any(x => sounds.Count(y => y / 6 == x) % 6 == 0);
+                numalts[0] = Enumerable.Range(0, 5).Any(x => sounds.Count(y => y % 5 == x) % 6 == 0);
+                numalts[1] = Enumerable.Range(0, 6).Any(x => sounds.Count(y => y / 5 == x) % 5 == 0);
                 numalts[2] = sounds.Where(x => x < 25 && x % 5 < 4).Any(x => sounds.Contains(x + 1) && sounds.Contains(x + 5) && sounds.Contains(x + 6));
                 numalts[3] = sounds.Where(x => x < 20 && x % 5 < 3).Any(x => sounds.Contains(x + 2) && sounds.Contains(x + 10) && sounds.Contains(x + 12));
                 numalts[4] = modsn.Skip(2).Any(x => info.GetSerialNumberLetters().Contains(x));
@@ -846,7 +853,8 @@ public class KnotWiresScript : MonoBehaviour {
             default:
                 inittime = (int)info.GetTime();
                 submissions.Add(0);
-                submissions.Add(149);
+                submissions.Add(199);
+                zhold[0] = colints.Take(3).Select(x => new int[] { 0, 1, 2, 0, 1, 2, 3}[x]).Sum() % 10;
                 int[] outs = new int[3] { Random.Range(1, 31),  Random.Range(1, 31), Random.Range(70, 100) };
                 initnums[0] = Enumerable.Range(1, 99).Except(outs).ToList().Shuffle().Take(4).ToList();
                 initnums[0].Add(outs[0]);
@@ -906,7 +914,9 @@ public class KnotWiresScript : MonoBehaviour {
                             if (initnums[0][6] % 5 == 0) answer.Add(18);
                             else if (initnums[0][6] % 3 == 0) answer.Add(19);
                             else answer.Add(20);
-                            answer.Add(((i + 1) / 3) + 18);
+                            if (i < 2) answer.Add(18);
+                            else if (i > 4) answer.Add(19);
+                            else answer.Add(20);
                             break;
                     }
                     Debug.LogFormat("[Knot Wires #{0}] {3}: The {1} hold rule and {2} release rule apply.", moduleID, new string[] { "first", "second", "third"}[answer[answer.Count() - 2] % 3], new string[] { "first", "second", "third"}[answer.Last() % 3], new string[] { "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White"}[initnums[1][i]]);
@@ -922,50 +932,56 @@ public class KnotWiresScript : MonoBehaviour {
                     submissions.Add((int)info.GetTime() % 10);
                 if((moduletype != 7 && moduletype != 9) || !relseq)
                     StartCoroutine("Display");
-                if(moduletype == 9 && relseq)
+                if(moduletype == 9)
                 {
-                    bool next = false;
-                    switch (answer[submissions[0]])
+                    if (relseq)
                     {
-                        case 0: next = ((int)info.GetTime() % 10) == ((int)info.GetTime() % 60) / 10; break;
-                        case 1: next = Math.Abs(((int)info.GetTime() % 10) - (((int)info.GetTime() % 60) / 10)) == 1; break;
-                        case 2: next = Math.Abs(((int)info.GetTime() % 10) - (((int)info.GetTime() % 60) / 10)) == 2; break;
-                        case 3: next = screenints[1] == 1; break;
-                        case 4: next = screenints[1] == 5; break;
-                        case 5: next = screenints[1] == 0; break;
-                        case 6: next = screenints[0] % 7 == 0; break;
-                        case 7: next = screenints[0] % 5 == 0; break;
-                        case 8: next = screenints[0] % 3 == 0; break;
-                        case 9: next = new int[] { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149}.Contains(screenints[0]); break;
-                        case 10: next = new int[] { 4, 6, 9, 10, 14, 15, 21, 22, 25, 26, 33, 34, 35, 38, 39, 46, 49, 51, 55, 57, 58, 62, 65, 69, 74, 77, 82, 85, 86, 87, 91, 93, 94, 95, 106, 111, 115, 118, 119, 121, 122, 123, 129, 133, 134, 141, 142, 143, 145, 146}.Contains(screenints[0]); break;
-                        case 11: next = new int[] { 8, 12, 18, 20, 27, 28, 30, 42, 44, 45, 50, 52, 63, 66, 68, 70, 75, 76, 78, 92, 98, 99, 102, 105, 110, 114, 116, 117, 124, 125, 130, 138, 147, 148}.Contains(screenints[0]); break;
-                        case 12: next = screenints[0] % 10 == colints.Count(x => x == 0); break;
-                        case 13: next = screenints[0] % 10 == colints.Count(x => x == 2); break;
-                        case 14: next = screenints[0] % 10 == colints.Count(x => x == 6); break;
-                        case 15: next = info.GetFormattedTime().Contains('0'); break;
-                        case 16: next = info.GetFormattedTime().Contains('2'); break;
-                        case 17: next = info.GetFormattedTime().Contains('4'); break;
-                        case 18: next = ((int)info.GetTime() % 10) == info.GetSerialNumberNumbers().Last(); break;
-                        case 19: next = ((int)info.GetTime() % 10) == info.GetSerialNumberNumbers().First(); break;
-                        default: next = ((int)info.GetTime() % 10) == ((info.GetSerialNumberNumbers().Sum() - 1) % 9) + 1; break;
-                    }
-                    Debug.LogFormat("[Knot Wires #{0}] Button held: {1} {2} at {3}. {4}.", moduleID, new string[] { "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White"}[screenints[1]], screenints[0], info.GetFormattedTime(), next ? "Correct" : "Incorrect");
-                    if (next)
-                    {
-                        submissions[0]++;
-                        submissions[1] = screenints[0];
+                        zhold[1] = zhold[0];
+                        bool next = false;
+                        switch (answer[submissions[0]])
+                        {
+                            case 0: next = ((int)info.GetTime() % 10) == ((int)info.GetTime() % 60) / 10; break;
+                            case 1: next = Math.Abs(((int)info.GetTime() % 10) - (((int)info.GetTime() % 60) / 10)) == 1; break;
+                            case 2: next = Math.Abs(((int)info.GetTime() % 10) - (((int)info.GetTime() % 60) / 10)) == 2; break;
+                            case 3: next = screenints[1] == 1; break;
+                            case 4: next = screenints[1] == 5; break;
+                            case 5: next = screenints[1] == 0; break;
+                            case 6: next = screenints[0] % 7 == 0; break;
+                            case 7: next = screenints[0] % 5 == 0; break;
+                            case 8: next = screenints[0] % 3 == 0; break;
+                            case 9: next = new int[] { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149 }.Contains(screenints[0]); break;
+                            case 10: next = new int[] { 4, 6, 9, 10, 14, 15, 21, 22, 25, 26, 33, 34, 35, 38, 39, 46, 49, 51, 55, 57, 58, 62, 65, 69, 74, 77, 82, 85, 86, 87, 91, 93, 94, 95, 106, 111, 115, 118, 119, 121, 122, 123, 129, 133, 134, 141, 142, 143, 145, 146 }.Contains(screenints[0]); break;
+                            case 11: next = new int[] { 8, 12, 18, 20, 27, 28, 30, 42, 44, 45, 50, 52, 63, 66, 68, 70, 75, 76, 78, 92, 98, 99, 102, 105, 110, 114, 116, 117, 124, 125, 130, 138, 147, 148 }.Contains(screenints[0]); break;
+                            case 12: next = screenints[0] % 10 == colints.Count(x => x == 0); break;
+                            case 13: next = screenints[0] % 10 == colints.Count(x => x == 2); break;
+                            case 14: next = screenints[0] % 10 == colints.Count(x => x == 6); break;
+                            case 15: next = info.GetFormattedTime().Contains('0'); break;
+                            case 16: next = info.GetFormattedTime().Contains('2'); break;
+                            case 17: next = info.GetFormattedTime().Contains('4'); break;
+                            case 18: next = ((int)info.GetTime() % 10) == info.GetSerialNumberNumbers().Last(); break;
+                            case 19: next = ((int)info.GetTime() % 10) == info.GetSerialNumberNumbers().First(); break;
+                            default: next = ((int)info.GetTime() % 10) == ((info.GetSerialNumberNumbers().Sum() - 1) % 9) + 1; break;
+                        }
+                        Debug.LogFormat("[Knot Wires #{0}] Button held: {1} {2} at {3}. {4}.", moduleID, new string[] { "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[screenints[1]], screenints[0], info.GetFormattedTime(), next ? "Correct" : "Incorrect");
+                        if (next)
+                        {
+                            submissions[0]++;
+                            submissions[1] = screenints[0];
+                        }
+                        else
+                        {
+                            StopCoroutine("Countdown");
+                            displays[0].text = "";
+                            displays[0].fontSize = cb ? 100 : 200;
+                            module.HandleStrike();
+                            submissions[0] = 0;
+                            submissions[1] = 149;
+                            relseq = false;
+                            shownum[0] = new bool[7];
+                        }
                     }
                     else
-                    {
-                        StopCoroutine("Countdown");
-                        displays[0].text = "";
-                        displays[0].fontSize = cb ? 100 : 200;
-                        module.HandleStrike();
-                        submissions[0] = 0;
-                        submissions[1] = 149;
-                        relseq = false;
-                        shownum[0] = new bool[7];
-                    }
+                        zhold[1] = (int)info.GetTime() % 10;
                 }
             }
             return false;
@@ -1127,6 +1143,7 @@ public class KnotWiresScript : MonoBehaviour {
                             bool accept = false;
                             int time = (int)info.GetTime();
                             int[] timedigs = new int[4] { (time / 600) % 10, (time / 60) % 10, (time % 60) / 10, time % 10};
+                            Debug.Log(string.Join(", ", timedigs.Select(x => x.ToString()).ToArray()));
                             switch (answer[0])
                             {
                                 case 0: accept = timedigs[2] + timedigs[3] == 7; break;
@@ -1145,7 +1162,7 @@ public class KnotWiresScript : MonoBehaviour {
                                 case 13: accept = info.GetFormattedTime().Select(x => "123456789".Contains(x) ? x - '0' : 0).Sum() < 5 || info.GetFormattedTime().Select(x => "123456789".Contains(x) ? x - '0' : 0).Sum() > 16; break;
                                 case 14: accept = timedigs[3] == colints.Count(x => x == 4); break;
                                 case 15: accept = timedigs[3] == info.GetPorts().Count() % 10; break;
-                                case 16: accept = Mathf.Abs(timedigs[1] - timedigs[3]) == buttonind + 1; break;
+                                case 16: accept = Mathf.Abs(timedigs[1] - timedigs[3]) == new int[] { 2, 1, 3, 4}[buttonind]; break;
                                 case 17: accept = timedigs.Where(x => x != 0).GroupBy(x => x).All(x => x.Count() == 1); break;
                                 case 18: accept = timedigs[2] == 0; break;
                                 case 19: accept = info.GetFormattedTime().Select(x => "123456789".Contains(x) ? x - '0' : 0).Sum() % 5 == 0; break;
@@ -1308,9 +1325,9 @@ public class KnotWiresScript : MonoBehaviour {
                             bool next = false;
                             switch (answer[submissions[0]])
                             {
-                                case 0: next = colints.All(x => x != initnums[1][6]); break;
-                                case 1: next = colints.All(x => x != initnums[1][3]); break;
-                                case 2: next = colints.All(x => x != initnums[1][0]); break;
+                                case 0: next = screenints[1] == initnums[1][6]; break;
+                                case 1: next = screenints[1] == initnums[1][3]; break;
+                                case 2: next = screenints[1] == initnums[1][0]; break;
                                 case 3:
                                     if (info.GetTime() / inittime > 2f / 3) { next = submissions[1] - screenints[0] == 6; break; }
                                     else if (info.GetTime() / inittime > 1f / 3) { next = submissions[1] - screenints[0] == 3; break; }
@@ -1336,7 +1353,7 @@ public class KnotWiresScript : MonoBehaviour {
                             {
                                 submissions[0]++;
                                 submissions[1] = screenints[0];
-                                if(submissions[0] > 13)
+                                if (submissions[0] > 13)
                                 {
                                     StopCoroutine("Countdown");
                                     displays[0].text = "";
@@ -1356,10 +1373,21 @@ public class KnotWiresScript : MonoBehaviour {
                                 shownum[0] = new bool[7];
                             }
                         }
-                        else if (shownum[0].All(x => x))
+                        else
                         {
-                            relseq = true;
-                            StartCoroutine("Countdown");
+                            if (!relseq)
+                            {
+                                if (zhold[1] != zhold[0])
+                                {
+                                    Debug.LogFormat("[Knot Wires #{0}] Button held when the last digit of the timer was {1}. {2} is the accepted digit.", moduleID, zhold[1], zhold[0]);
+                                    module.HandleStrike();
+                                }
+                            }
+                            if (shownum[0].All(x => x))
+                            {
+                                relseq = true;
+                                StartCoroutine("Countdown");
+                            }
                         }
                         break;
                 }
@@ -1489,25 +1517,27 @@ public class KnotWiresScript : MonoBehaviour {
                         break;
                     case 7:
                         screenints[0] = Random.Range(1, 100);
-                        screenints[1] = Random.Range(0, 7);
                         if (dispnum % 10 == 2)
                             product = 1;
                         factors[0, (dispnum - 2) % 10] = screenints[0];
-                        factors[1, (dispnum - 2) % 10] = screenints[1];
-                        if (screenints[1] == colints[0])
-                            factors[2, (dispnum - 2) % 10] = ((9 - (screenints[0] / 10)) * 10) + (screenints[0] % 10);
-                        else if (screenints[1] == colints[1])
-                            factors[2, (dispnum - 2) % 10] = 100 - screenints[0];
-                        else if (screenints[1] == colints[2])
-                            factors[2, (dispnum - 2) % 10] = (screenints[0] / 10) + 9 - (screenints[0] % 10);
-                        else if (screenints[1] == colints[3])
-                            factors[2, (dispnum - 2) % 10] = (((screenints[0] / 10) + 5) * 10) + ((screenints[0] + 5) % 10);
-                        else if (screenints[1] == colints[4])
-                            factors[2, (dispnum - 2) % 10] = (screenints[0] * 3) % 100;
-                        else if (screenints[1] == colints[5])
-                            factors[2, (dispnum - 2) % 10] = (screenints[0] % 10) * 10 + (screenints[0] / 10);
-                        else
-                            factors[2, (dispnum - 2) % 10] = screenints[0];
+                        do {
+                            screenints[1] = Random.Range(0, 7);
+                            factors[1, (dispnum - 2) % 10] = screenints[1];
+                            if (screenints[1] == colints[0])
+                                factors[2, (dispnum - 2) % 10] = ((9 - (screenints[0] / 10)) * 10) + (screenints[0] % 10);
+                            else if (screenints[1] == colints[1])
+                                factors[2, (dispnum - 2) % 10] = 100 - screenints[0];
+                            else if (screenints[1] == colints[2])
+                                factors[2, (dispnum - 2) % 10] = ((screenints[0] / 10) * 10) + (9 - (screenints[0] % 10));
+                            else if (screenints[1] == colints[3])
+                                factors[2, (dispnum - 2) % 10] = ((((screenints[0] / 10) + 5) % 10) * 10) + ((screenints[0] + 5) % 10);
+                            else if (screenints[1] == colints[4])
+                                factors[2, (dispnum - 2) % 10] = (screenints[0] * 3) % 100;
+                            else if (screenints[1] == colints[5])
+                                factors[2, (dispnum - 2) % 10] = (screenints[0] % 10) * 10 + (screenints[0] / 10);
+                            else
+                                factors[2, (dispnum - 2) % 10] = screenints[0];
+                        } while (factors[0, (dispnum - 2) % 10] < 1);
                         product *= factors[2, (dispnum - 2) % 10];
                             break;
                     case 9:
@@ -1595,7 +1625,7 @@ public class KnotWiresScript : MonoBehaviour {
     private IEnumerator ElimSeq()
     {
         bool eliminc = dpairs.Count() < 6 || Random.Range(0, 2) == 0;
-        List<int> rem = Enumerable.Range(0, 100).ToList().Except(dpairs).ToList().Shuffle();
+        List<int> rem = Enumerable.Range(1, 100).ToList().Except(dpairs).ToList().Shuffle();
         relnums = (dpairs.Count() < 6 ? dpairs : dpairs.Take(eliminc ? 5 : 6)).Concat(rem.Take(eliminc ? 6 : 5)).ToList().Shuffle();
         Debug.LogFormat("[Knot Wires #{0}] The sequence displays the numbers: {1}", moduleID, string.Join(", ", relnums.OrderBy(x => x).Select(x => x.ToString()).ToArray()));
         crelnums = (eliminc ? (dpairs.Count() < 6 ? dpairs : dpairs.Take(5)) : rem.Take(5)).ToArray();
@@ -1620,7 +1650,7 @@ public class KnotWiresScript : MonoBehaviour {
         int[] r = new int[10];
         displays[0].fontSize = cb ? 70 : 130;
         yield return null;
-        for (int i = 149; i >= 0; i--)
+        for (int i = 199; i >= 0; i--)
         {
             screenints[0] = i;
             if(i % 10 == 9)
