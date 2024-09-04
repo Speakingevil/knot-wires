@@ -176,12 +176,12 @@ public class KnotWiresScript : MonoBehaviour {
                     modsn += Mathf.Abs(rotations[i] - rotations[3]) == 2 ? "UQJ"[i] : "WEM"[i];
                 break;
         }
-        Debug.LogFormat("[Knot Wires #{0}] The button is {1}, is labelled \"{2}\" and faces {3}.", moduleID, new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white"} [colints[3]], new string[] { "PRESS", "PUSH", "HOLD", "ABORT"}[buttonind], new string[] { "south", "west", "north", "east" }[(rotations[0] - rotations[4] + 4) % 4]);
-        Debug.LogFormat("[Knot Wires #{0}] The LEDs are {1}, {2}, and {3} and face {4}.", moduleID, new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white" }[colints[0]], new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white" }[colints[1]], new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white" }[colints[2]], new string[] { "south", "west", "north", "east" }[(rotations[1] - rotations[4] + 4) % 4]);
-        Debug.LogFormat("[Knot Wires #{0}] The screen faces {1}.", moduleID, new string[] { "south", "west", "north", "east" }[(rotations[2] - rotations[4] + 4) % 4]);
-        Debug.LogFormat("[Knot Wires #{0}] The {1} batter{2} {3} and face{4} {5}.", moduleID, new string[] { "AA", "AAA", "D", "9V" }[battype], new string[] { "ies are", "y is"}[battype / 2], new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white" }[colints[4]], new string[] { "", "s" }[battype / 2], new string[] { "south", "west", "north", "east" }[(rotations[3] - rotations[4] + 4) % 4]);
-        Debug.LogFormat("[Knot Wires #{0}] The wires are {1}.", moduleID, new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white" }[colints[5]]);
-        Debug.LogFormat("[Knot Wires #{0}] The module type is: {1}.", moduleID, modsn);
+        Debug.LogFormat("[Knot Wires{0} #{1}] The button is {2}, is labelled \"{3}\" and faces {4}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white"} [colints[3]], new string[] { "PRESS", "PUSH", "HOLD", "ABORT"}[buttonind], new string[] { "south", "west", "north", "east" }[(rotations[0] - rotations[4] + 4) % 4]);
+        Debug.LogFormat("[Knot Wires{0} #{1}] The LEDs are {2}, {3}, and {4} and face {5}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white" }[colints[0]], new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white" }[colints[1]], new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white" }[colints[2]], new string[] { "south", "west", "north", "east" }[(rotations[1] - rotations[4] + 4) % 4]);
+        Debug.LogFormat("[Knot Wires{0} #{1}] The screen faces {2}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "south", "west", "north", "east" }[(rotations[2] - rotations[4] + 4) % 4]);
+        Debug.LogFormat("[Knot Wires{0} #{1}] The {2} batter{3} {4} and face{5} {6}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "AA", "AAA", "D", "9V" }[battype], new string[] { "ies are", "y is"}[battype / 2], new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white" }[colints[4]], new string[] { "", "s" }[battype / 2], new string[] { "south", "west", "north", "east" }[(rotations[3] - rotations[4] + 4) % 4]);
+        Debug.LogFormat("[Knot Wires{0} #{1}] The wires are {2}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white" }[colints[5]]);
+        Debug.LogFormat("[Knot Wires{0} #{1}] The module type is: {2}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, modsn);
         switch (moduletype)
         {
             case 0:
@@ -225,7 +225,7 @@ public class KnotWiresScript : MonoBehaviour {
                 else
                     holdtimes[1] = 9;
                 answer = holdtimes.ToList();
-                Debug.LogFormat("[Knot Wires #{0}] Hold at {1}. Release at {2}.", moduleID, holdtimes[0], holdtimes[1]);
+                Debug.LogFormat("[Knot Wires{0} #{1}] Hold at {2}. Release at {3}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, holdtimes[0], holdtimes[1]);
                 break;
             case 1:
                 switch (colints[0])
@@ -343,14 +343,14 @@ public class KnotWiresScript : MonoBehaviour {
                 for (int i = 0; i < 99; i++)
                     if (indconds[0][i] && indconds[1][i] && indconds[2][i])
                         answer.Add(i + 1);
-                Debug.LogFormat("[Knot Wires #{0}] The numbers that satisfy all three conditions are: {1}", moduleID, string.Join(", ", answer.Select(i => i.ToString()).ToArray()));
+                Debug.LogFormat("[Knot Wires{0} #{1}] The numbers that satisfy all three conditions are: {2}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, string.Join(", ", answer.Select(i => i.ToString()).ToArray()));
                 break;
             case 2:
                 startnum = new int[2] { Random.Range(1, 100), Random.Range(0, 6) };
                 answer.Add(startnum[0]);
                 string[] truth = new string[4] { "\u00d8", "\u00d8", "\u00d8", "\u00d8"};
-                Debug.LogFormat("[Knot Wires #{0}] The starting value is {1}", moduleID, startnum[0].ToString());
-                Debug.LogFormat("[Knot Wires #{0}] List {1} is used to modify the starting value", moduleID, "RGBCMY"[startnum[1]]);
+                Debug.LogFormat("[Knot Wires{0} #{1}] The starting value is {2}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, startnum[0].ToString());
+                Debug.LogFormat("[Knot Wires{0} #{1}] List {2} is used to modify the starting value.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, "RGBCMY"[startnum[1]]);
                 switch (startnum[1])
                 {
                     case 0:
@@ -390,9 +390,9 @@ public class KnotWiresScript : MonoBehaviour {
                         if (modsn.Contains("K")) { truth[3] = "T";  answer.Add(answer[3] * 4); } else { truth[3] = "F"; answer.Add(answer[3] * 6); }
                         break;
                 }
-                Debug.Log("[Knot Wires #" + moduleID + "] " + string.Join("\n[Knot Wires #" + moduleID + "] ", answer.Take(4).Select((x, i) => truth[i] + ": " + x + " \u2192 " + answer[i + 1]).ToArray()));
+                Debug.Log("[Knot Wires" + (forcenum < 0 ? "" : ("-" + modsn[0].ToString())) + " #" + moduleID + "] " + string.Join("\n[Knot Wires #" + moduleID + "] ", answer.Take(4).Select((x, i) => truth[i] + ": " + x + " \u2192 " + answer[i + 1]).ToArray()));
                 answer[0] = Modify(answer[4]);
-                Debug.LogFormat("[Knot Wires #{0}] Release the button on the {1}{2} display of the sequence", moduleID, answer[0], new string[10] { "th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th" }[answer[0] % 10]);
+                Debug.LogFormat("[Knot Wires{0} #{1}] Release the button on the {2}{3} display of the sequence.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, answer[0], new string[10] { "th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th" }[answer[0] % 10]);
                 break;
             case 3:
                 string[][] mazes = new string[7][] {
@@ -529,8 +529,8 @@ public class KnotWiresScript : MonoBehaviour {
                     pos[1] = new int[7] { 1, 1, 1, 5, 5, 5, 3 }[colints[3]];
                     pos[0] = new int[7] { 1, 3, 5, 1, 3, 5, 3 }[colints[3]];
                     pos[2] = 3; pos[3] = 3;
-                    Debug.LogFormat("[Knot Wires #{0}] The start colour is {1}.", moduleID, new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white" }[colints[3]]);
-                    Debug.LogFormat("[Knot Wires #{0}] The exit colour is white.", moduleID);
+                    Debug.LogFormat("[Knot Wires{0} #{1}] The start colour is {2}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white" }[colints[3]]);
+                    Debug.LogFormat("[Knot Wires{0} #{1}] The exit colour is white.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID);
                 }
                 else
                 {
@@ -538,8 +538,8 @@ public class KnotWiresScript : MonoBehaviour {
                     pos[0] = new int[7] { 1, 3, 5, 1, 3, 5, 3 }[colints[3]];
                     pos[3] = new int[7] { 1, 1, 1, 5, 5, 5, 3 }[colints[4]];
                     pos[2] = new int[7] { 1, 3, 5, 1, 3, 5, 3 }[colints[4]];
-                    Debug.LogFormat("[Knot Wires #{0}] The start colour is {1}.", moduleID, new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white" }[colints[3]]);
-                    Debug.LogFormat("[Knot Wires #{0}] The exit colour is {1}.", moduleID, new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white" }[colints[4]]);
+                    Debug.LogFormat("[Knot Wires{0} #{1}] The start colour is {2}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white" }[colints[3]]);
+                    Debug.LogFormat("[Knot Wires{0} #{1}] The exit colour is {2}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white" }[colints[4]]);
                 }
                 bool[][] locconds = new bool[2][] { new bool[4], new bool[4] };
                 if (modsn.Contains("F")) { pos[1]--; locconds[0][0] = true; } else if (modsn.Contains("L")) { pos[1]++; locconds[0][1] = true; }
@@ -547,8 +547,8 @@ public class KnotWiresScript : MonoBehaviour {
                 if (buttonind == 2) { pos[3]--; locconds[1][0] = true; } else if (buttonind == 3) { pos[3]++; locconds[1][1] = true; }
                 if (colints.Where((x, i) => i < 3 && x < 3).Count() > 1) { pos[2]--; locconds[1][2] = true; } else if (colints.Where((x, i) => i < 3 && x == 6).Count() == 0) { pos[2]++; locconds[1][3] = true; }
                 for (int j = 0; j < 2; j++) {
-                    if (!locconds[j].Contains(true)) Debug.LogFormat("[Knot Wires #{0}] No {1} conditions are true.", moduleID, new string[] { "start", "exit"}[j]);
-                    else Debug.LogFormat("[Knot Wires #{0}] {1} conditions {2} apply.", moduleID, new string[] { "Start", "Exit" }[j], string.Join(" and ", new string[] { "W", "E", "N", "S" }.Where((x, i) => locconds[j][i]).ToArray())); }
+                    if (!locconds[j].Contains(true)) Debug.LogFormat("[Knot Wires{0} #{1}] No {2} conditions are true.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "start", "exit"}[j]);
+                    else Debug.LogFormat("[Knot Wires{0} #{1}] {2} conditions {3} apply.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "Start", "Exit" }[j], string.Join(" and ", new string[] { "W", "E", "N", "S" }.Where((x, i) => locconds[j][i]).ToArray())); }
                 string[][] logmaze = new string[15][] { new string[15], new string[15], new string[15], new string[15], new string[15], new string[15], new string[15], new string[15], new string[15], new string[15], new string[15], new string[15], new string[15], new string[15], new string[15]};
                 for(int i = 0; i < 15; i++)
                     for(int j = 0; j < 15; j++) {
@@ -565,7 +565,7 @@ public class KnotWiresScript : MonoBehaviour {
                     logmaze[(pos[0] * 2) + 1][(pos[1] * 2) + 1] = "S ";
                     logmaze[(pos[2] * 2) + 1][(pos[3] * 2) + 1] = "E ";
                 }
-                Debug.LogFormat("[Knot Wires #{0}] The maze has the following configuration:\n[Knot Wires #{0}] {1}", moduleID, string.Join("\n[Knot Wires #" + moduleID + "] ", logmaze.Select(i => string.Join("", i)).ToArray()));
+                Debug.LogFormat("[Knot Wires{0} #{1}] The maze has the following configuration:\n[Knot Wires{0} #{1}] {2}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, string.Join("\n[Knot Wires" + (forcenum < 0 ? "" : ("-" + modsn[0].ToString())) + " #" + moduleID + "] ", logmaze.Select(i => string.Join("", i)).ToArray()));
                 if (pos[0] != pos[2] || pos[1] != pos[3])
                 {
                     pos[4] = pos[0];
@@ -584,8 +584,8 @@ public class KnotWiresScript : MonoBehaviour {
                     else if (dir[0] == (rotations[2] - rotations[4] + 4) % 4) { conds[2] = 2; dir[2] = (rotations[1] - rotations[4] + 3) % 4; }
                     else { conds[2] = 3; dir[2] = 3; }
                     for (int i = 0; i < 3; i++)
-                        if (conds[i] == 3) Debug.LogFormat("[Knot Wires #{0}] No {1} conditions apply.", moduleID, new string[] { "R/C", "G/M", "B/Y" }[i]);
-                        else Debug.LogFormat("[Knot Wires #{0}] {1} condition {2} applies.", moduleID, new string[] { "R/C", "G/M", "B/Y" }[i], conds[i] + 1);
+                        if (conds[i] == 3) Debug.LogFormat("[Knot Wires{0} #{1}] No {2} conditions apply.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "R/C", "G/M", "B/Y" }[i]);
+                        else Debug.LogFormat("[Knot Wires{0} #{1}] {2} condition {3} applies.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "R/C", "G/M", "B/Y" }[i], conds[i] + 1);
                     for (int i = 1; i < 3; i++)
                         while (dir.Where((x, j) => j < i).Contains(dir[i]))
                             dir[i] = (dir[i] + 1) % 4;
@@ -594,15 +594,15 @@ public class KnotWiresScript : MonoBehaviour {
                     for (int i = 0; i < 3; i++)
                         dir[i + 3] = dir[i];
                     for (int i = 0; i < 3; i++)
-                        Debug.LogFormat("[Knot Wires #{0}] Releasing the button when the display is {1} moves {2}", moduleID, new string[] { "red/cyan", "green/magenta", "blue/yellow" }[i], new string[] { "north", "east", "south", "west" }[dir[i]]);
-                    Debug.LogFormat("[Knot Wires #{0}] Tapping the button moves {1}", moduleID, new string[] { "north", "east", "south", "west" }[dir[6]]);
+                        Debug.LogFormat("[Knot Wires{0} #{1}] Releasing the button when the display is {2} moves {3}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "red/cyan", "green/magenta", "blue/yellow" }[i], new string[] { "north", "east", "south", "west" }[dir[i]]);
+                    Debug.LogFormat("[Knot Wires{0} #{1}] Tapping the button moves {2}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "north", "east", "south", "west" }[dir[6]]);
                 }
                 break;
             case 4:               
                 int[] vals = new int[6] { Random.Range(0, 36), Random.Range(0, 36), Random.Range(0, 36), 0, 0, 0 };
                 int[] snvals = info.GetSerialNumber().Select(x => "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(x)).ToArray();
                 submissions.Add(colints[snvals[0] % 6]);
-                Debug.LogFormat("[Knot Wires #{0}] Initiate sequence by releasing the button on a {1} display. ({2})", moduleID, new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white"}[submissions[0]], new string[] { "First LED", "Middle LED", "Third LED", "Button", "Battery", "Wires"}[snvals[0] % 6]);
+                Debug.LogFormat("[Knot Wires{0} #{1}] Initiate sequence by releasing the button on a {2} display. ({3})", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "white"}[submissions[0]], new string[] { "First LED", "Middle LED", "Third LED", "Button", "Battery", "Wires"}[snvals[0] % 6]);
                 int ind = new int[] { snvals[0], snvals[1], snvals[3], snvals[4] }[battype];
                 for (int i = 0; i < 3; i++)
                 {
@@ -618,15 +618,15 @@ public class KnotWiresScript : MonoBehaviour {
                         default: vals[i + 3] = (ind - vals[i] + 36) % 36; break;
                     }
                 }
-                Debug.LogFormat("[Knot Wires #{0}] The input characters are: {1}", moduleID, string.Join(" ", vals.Where((x, i) => i < 3).Select(x => "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"[x].ToString()).ToArray()));
-                Debug.LogFormat("[Knot Wires #{0}] The output characters are: {1}", moduleID, string.Join(" ", vals.Where((x, i) => i >= 3).Select(x => "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"[x].ToString()).ToArray()));
+                Debug.LogFormat("[Knot Wires{0} #{1}] The input characters are: {2}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, string.Join(" ", vals.Where((x, i) => i < 3).Select(x => "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"[x].ToString()).ToArray()));
+                Debug.LogFormat("[Knot Wires{0} #{1}] The output characters are: {2}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, string.Join(" ", vals.Where((x, i) => i >= 3).Select(x => "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"[x].ToString()).ToArray()));
                 string morsestring = string.Join("", vals.Where((x, i) => i >= 3).Select(x => morse[x]).ToArray());
                 for (int i = 0; i < 3; i++)
                 {
                     morseflash[i] = string.Join("", morseflash[i].Select(x => x == '.' ? "#-" : "###-").ToArray()) + "--";
                     ms[i] = Telseq(morseflash[i], i);
                 }
-                Debug.LogFormat("[Knot Wires #{0}] The initial string of morse code is \"{1}\".", moduleID, morsestring);
+                Debug.LogFormat("[Knot Wires{0} #{1}] The initial string of morse code is \"{2}\".", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, morsestring);
                 if(morsestring.Length >= snvals[2] + snvals[5])
                 {
                     if (buttonind < 2)
@@ -646,18 +646,18 @@ public class KnotWiresScript : MonoBehaviour {
                     morsestring += morsestring[0];
                 if (morsestring.Length % 3 > 0)
                     morsestring += morsestring[1];
-                Debug.LogFormat("[Knot Wires #{0}] The transformed string of morse code is \"{1}\".", moduleID, morsestring);
+                Debug.LogFormat("[Knot Wires{0} #{1}] The transformed string of morse code is \"{2}\".", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, morsestring);
                 for(int i = 0; i < morsestring.Length / 3; i++)
                 {
                     string triplet = morsestring.Substring(3 * i, 3);
                     morsesub.Add(Array.IndexOf(new string[8] { "...", "-..", ".-.", "..-", ".--", "-.-", "--.", "---"}, triplet));
                 }
-                Debug.LogFormat("[Knot Wires #{0}] Submit the sequence: {1}", moduleID, string.Join(", ", morsesub.Select(x => new string[] { "Black", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[x]).ToArray()));
+                Debug.LogFormat("[Knot Wires{0} #{1}] Submit the sequence: {2}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, string.Join(", ", morsesub.Select(x => new string[] { "Black", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[x]).ToArray()));
                 break;
             case 5:                
                 string[] tapwords = new string[25] { "ACID", "AZON", "BLUE", "COPY", "ECHO", "FIVE", "FOUL", "GREY", "JOIN", "LAND", "LEFT", "MOVE", "NEWS", "ONYX", "PINK", "PORT", "PUSH", "QUAD", "SLOW", "STAR", "THIS", "TICK", "WHAT", "WHEN", "WIRE" };
                 int[] tselect = new int[2] { Random.Range(0, 25), Random.Range(0, 24)};
-                Debug.LogFormat("[Knot Wires #{0}] The word displayed is {1} and the letter displayed is {2}.", moduleID, tapwords[tselect[0]], "ABCDEFGHIJKLMNOPQRSTUVWX"[tselect[1]]);
+                Debug.LogFormat("[Knot Wires{0} #{1}] The word displayed is {2} and the letter displayed is {3}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, tapwords[tselect[0]], "ABCDEFGHIJKLMNOPQRSTUVWX"[tselect[1]]);
                 for(int i = 0; i < 4; i++)
                 {
                     int let = "ABCDEFGHIJLMNOPQRSTUVWXYZ".IndexOf(tapwords[tselect[0]][i]);
@@ -668,7 +668,7 @@ public class KnotWiresScript : MonoBehaviour {
                 digitone = morse[tselect[1] + 10].Select(x => x == '.' ? false : true).ToArray();
                 for (int i = 1; i < 4; i++)
                     answer.Add((tselect[0] + (i * (tselect[1] + 1))) % 25);
-                Debug.LogFormat("[Knot Wires #{0}] Tap the button when the {1}, {2}, and {3} rules, in order, are satisfied.", moduleID, tapwords[answer[0]], tapwords[answer[1]], tapwords[answer[2]]);
+                Debug.LogFormat("[Knot Wires{0} #{1}] Tap the button when the {2}, {3}, and {4} rules, in order, are satisfied.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, tapwords[answer[0]], tapwords[answer[1]], tapwords[answer[2]]);
                 break;
             case 6:
                 List<int> relrots = rotations.Skip(1).Take(3).Select(x => (x - rotations[0] + 4) % 4).ToList();
@@ -793,7 +793,7 @@ public class KnotWiresScript : MonoBehaviour {
                             break;
                     }
                     ciphertext[i + 1] = ciphertext[i + 1].ToUpperInvariant();
-                    enclogs[3 - i] = string.Format("[Knot Wires #{0}] {1}[Knot Wires #{0}] {2}.", moduleID, enclogs[3 - i], "Decryption yields: " + ciphertext[i]);
+                    enclogs[3 - i] = string.Format("[Knot Wires{0} #{1}] {2}[Knot Wires{0} #{1}] {3}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, enclogs[3 - i], "Decryption yields: " + ciphertext[i]);
                 }
                 enclogs[0] += ciphertext[3];
                 for (int i = 0; i < 4; i++)
@@ -802,14 +802,14 @@ public class KnotWiresScript : MonoBehaviour {
                     colencoding[i] = alphcols[ciphertext[3][i] - 'A'];
                 int txind = (info.GetSerialNumberLetters().Take(2).Select(x => x - 'A').Sum() + 2) % 5;
                 answer = alphcols[ciphertext[0][txind] - 'A'].ToList();
-                Debug.LogFormat("[Knot Wires #{0}] Character {1} of the deciphered word is: {2}", moduleID, txind + 1, ciphertext[0][txind]);
-                Debug.LogFormat("[Knot Wires #{0}] Submit the colours {1} and {2}.", moduleID, new string[] { "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White"}[answer[0]], new string[] { "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[answer[1]]);
+                Debug.LogFormat("[Knot Wires{0} #{1}] Character {2} of the deciphered word is: {3}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, txind + 1, ciphertext[0][txind]);
+                Debug.LogFormat("[Knot Wires{0} #{1}] Submit the colours {2} and {3}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White"}[answer[0]], new string[] { "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[answer[1]]);
                 break;
             case 7:
                 break;
             case 8:
                 sounds = Enumerable.Range(0, 30).ToArray().Shuffle().Take(10).ToArray();
-                Debug.LogFormat("[Knot Wires #{0}] The digits 0-9 are assigned to the following sounds:\n[Knot Wires #{0}] {1}", moduleID, string.Join("\n[Knot Wires #" + moduleID + "] ", sounds.Select((x, i) => i.ToString() + " = " + new string[30] { "A Mistake", "Battleship", "Boxing", "Broken Buttons", "Cheap Checkout", "Colored Squares", "Creation", "Double Expert", "Double-Oh", "Fast Math", "Graffiti Numbers", "The Heart", "Hogwarts", "The Hypercube", "Laundry", "Painting", "Quiz Buzz", "Qwirkle", "RGB Maze", "RPS Judging", "Simon Shifts", "Simon Shouts", "Sink", "Street Fighter", "The Screw", "The Swan", "Tennis", "Word Search", "Yahtzee", "Zoni"}[x]).ToArray()));
+                Debug.LogFormat("[Knot Wires{0} #{1}] The digits 0-9 are assigned to the following sounds:\n[Knot Wires{0} #{1}] {2}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, string.Join("\n[Knot Wires #" + moduleID + "] ", sounds.Select((x, i) => i.ToString() + " = " + new string[30] { "A Mistake", "Battleship", "Boxing", "Broken Buttons", "Cheap Checkout", "Colored Squares", "Creation", "Double Expert", "Double-Oh", "Fast Math", "Graffiti Numbers", "The Heart", "Hogwarts", "The Hypercube", "Laundry", "Painting", "Quiz Buzz", "Qwirkle", "RGB Maze", "RPS Judging", "Simon Shifts", "Simon Shouts", "Sink", "Street Fighter", "The Screw", "The Swan", "Tennis", "Word Search", "Yahtzee", "Zoni"}[x]).ToArray()));
                 int[] rc = new int[2];
                 numalts[0] = Enumerable.Range(0, 5).Any(x => sounds.Count(y => y % 5 == x) % 6 == 0);
                 numalts[1] = Enumerable.Range(0, 6).Any(x => sounds.Count(y => y / 5 == x) % 5 == 0);
@@ -819,7 +819,7 @@ public class KnotWiresScript : MonoBehaviour {
                 numalts[5] = sounds.Count(x => x % 2 == 0) > 5;
                 numalts[6] = sounds.Count(x => x > 14) > 5;
                 numalts[7] = info.GetSerialNumberNumbers().Any(x => x == 0);
-                Debug.LogFormat("[Knot Wires #{0}] The alteration rules that apply are: {1}", moduleID, numalts.All(x => x == false) ? "None" : string.Join(", ", Enumerable.Range(1, 8).Where(x => numalts[x - 1]).Select(x => x.ToString()).ToArray()));
+                Debug.LogFormat("[Knot Wires{0} #{1}] The alteration rules that apply are: {2}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, numalts.All(x => x == false) ? "None" : string.Join(", ", Enumerable.Range(1, 8).Where(x => numalts[x - 1]).Select(x => x.ToString()).ToArray()));
                 if(!colints.Where((x, i) => i < 3).Any(x => x == 0))
                 {
                     if (colints[5] > 4)
@@ -844,11 +844,11 @@ public class KnotWiresScript : MonoBehaviour {
                     else
                         rc[1] = 4;
                 }
-                Debug.LogFormat("[Knot Wires #{0}] The {1} column and {2} row are used.", moduleID, new string[] { "first", "second", "third", "fourth", "fifth", "sixth" }[rc[0]], new string[] { "first", "second", "third", "fourth", "fifth" }[rc[1]]);
+                Debug.LogFormat("[Knot Wires{0} #{1}] The {2} column and {3} row are used.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "first", "second", "third", "fourth", "fifth", "sixth" }[rc[0]], new string[] { "first", "second", "third", "fourth", "fifth" }[rc[1]]);
                 pdivs[0] = sounds.Contains(rc[0] * 5 + rc[1]) ? 2 : 3;
                 pdivs[1] = new int[] { 5, 7, 11}[sounds.Count(x => x / 5 == rc[0]) / 2];
                 pdivs[2] = new int[] { 13, 17, 19, 23 }[sounds.Count(x => x % 5 == rc[1]) / 2];
-                Debug.LogFormat("[Knot Wires #{0}] The three prime numbers are: {1}", moduleID, string.Join(", ", pdivs.Select(x => x.ToString()).ToArray()));
+                Debug.LogFormat("[Knot Wires{0} #{1}] The three prime numbers are: {2}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, string.Join(", ", pdivs.Select(x => x.ToString()).ToArray()));
                 break;
             default:
                 inittime = (int)info.GetTime();
@@ -861,9 +861,9 @@ public class KnotWiresScript : MonoBehaviour {
                 initnums[0].Add(outs[1]);
                 initnums[0].Add(outs[2]);
                 initnums[0].Shuffle();
-                Debug.LogFormat("[Knot Wires #{0}] The values of each colour are: {1}", moduleID, string.Join(", ", Enumerable.Range(0, 7).Select(x => "RGBCMYW"[x] + "=" + initnums[0][x].ToString()).ToArray()));
+                Debug.LogFormat("[Knot Wires{0} #{1}] The values of each colour are: {2}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, string.Join(", ", Enumerable.Range(0, 7).Select(x => "RGBCMYW"[x] + "=" + initnums[0][x].ToString()).ToArray()));
                 initnums[1] = initnums[0].OrderBy(x => x).Select(x => initnums[0].IndexOf(x)).ToList();
-                Debug.LogFormat("[Knot Wires #{0}] The colours, in ascending order of their values, are: {1}", moduleID, string.Join(", ", initnums[1].Select(x => new string[] { "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[x]).ToArray()));
+                Debug.LogFormat("[Knot Wires{0} #{1}] The colours, in ascending order of their values, are: {2}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, string.Join(", ", initnums[1].Select(x => new string[] { "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[x]).ToArray()));
                 for (int i = 0; i < 7; i++)
                 {
                     switch (initnums[1][i])
@@ -919,7 +919,7 @@ public class KnotWiresScript : MonoBehaviour {
                             else answer.Add(20);
                             break;
                     }
-                    Debug.LogFormat("[Knot Wires #{0}] {3}: The {1} hold rule and {2} release rule apply.", moduleID, new string[] { "first", "second", "third"}[answer[answer.Count() - 2] % 3], new string[] { "first", "second", "third"}[answer.Last() % 3], new string[] { "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White"}[initnums[1][i]]);
+                    Debug.LogFormat("[Knot Wires{0} #{1}] {4}: The {2} hold rule and {3} release rule apply.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "first", "second", "third"}[answer[answer.Count() - 2] % 3], new string[] { "first", "second", "third"}[answer.Last() % 3], new string[] { "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White"}[initnums[1][i]]);
                 }
                 break;
         }
@@ -962,7 +962,7 @@ public class KnotWiresScript : MonoBehaviour {
                             case 19: next = ((int)info.GetTime() % 10) == info.GetSerialNumberNumbers().First(); break;
                             default: next = ((int)info.GetTime() % 10) == ((info.GetSerialNumberNumbers().Sum() - 1) % 9) + 1; break;
                         }
-                        Debug.LogFormat("[Knot Wires #{0}] Button held: {1} {2} at {3}. {4}.", moduleID, new string[] { "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[screenints[1]], screenints[0], info.GetFormattedTime(), next ? "Correct" : "Incorrect");
+                        Debug.LogFormat("[Knot Wires{0} #{1}] Button held: {2} {3} at {4}. {5}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[screenints[1]], screenints[0], info.GetFormattedTime(), next ? "Correct" : "Incorrect");
                         if (next)
                         {
                             submissions[0]++;
@@ -1001,12 +1001,12 @@ public class KnotWiresScript : MonoBehaviour {
                         {
                             moduleSolved = true;
                             module.HandlePass();
-                            Debug.LogFormat("[Knot Wires #{0}] Button was held at {1} and released at {2}. Correct.", moduleID, submissions[0], submissions[1]);
+                            Debug.LogFormat("[Knot Wires{0} #{1}] Button was held at {2} and released at {3}. Correct.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, submissions[0], submissions[1]);
                         }
                         else
                         {
                             module.HandleStrike();
-                            Debug.LogFormat("[Knot Wires #{0}] Button was held at {1} and released at {2}. This was incorrect.", moduleID, submissions[0], submissions[1]);
+                            Debug.LogFormat("[Knot Wires{0} #{1}] Button was held at {2} and released at {3}. This was incorrect.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, submissions[0], submissions[1]);
                         }
                         break;
                     case 1:
@@ -1015,17 +1015,17 @@ public class KnotWiresScript : MonoBehaviour {
                         {
                             moduleSolved = true;
                             module.HandlePass();
-                            Debug.LogFormat("[Knot Wires #{0}] Submitted {1}: This meets all three conditions.", moduleID, submissions[0]);
+                            Debug.LogFormat("[Knot Wires{0} #{1}] Submitted {2}: This meets all three conditions.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, submissions[0]);
                         }
                         else
                         {
                             module.HandleStrike();
                             if (submissions[0] == -1)
-                                Debug.LogFormat("[Knot Wires #{0}] Submitted NaN: This fails all conditions.", moduleID);
+                                Debug.LogFormat("[Knot Wires{0} #{1}] Submitted NaN: This fails all conditions.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID);
                             else
                             {
                                 int faults = 7 - (4 * Convert.ToInt32(indconds[0][submissions[0] - 1]) + 2 * Convert.ToInt32(indconds[1][submissions[0] - 1]) + Convert.ToInt32(indconds[2][submissions[0] - 1]));
-                                Debug.LogFormat("[Knot Wires #{0}] Submitted {1}: This fails to meet condition{2} {3}.", moduleID, submissions[0], new int[] { 1, 2, 4 }.Contains(faults) ? "" : "s", new string[] { "", "3", "2", "2 and 3", "1", "1 and 3", "2 and 3", "1, 2, and 3" }[faults]);
+                                Debug.LogFormat("[Knot Wires{0} #{1}] Submitted {2}: This fails to meet condition{3} {4}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, submissions[0], new int[] { 1, 2, 4 }.Contains(faults) ? "" : "s", new string[] { "", "3", "2", "2 and 3", "1", "1 and 3", "2 and 3", "1, 2, and 3" }[faults]);
                             }
                         }
                         submissions.Clear();
@@ -1048,18 +1048,18 @@ public class KnotWiresScript : MonoBehaviour {
                             {
                                 moduleSolved = true;
                                 module.HandlePass();
-                                Debug.LogFormat("[Knot Wires #{0}] Button released on white. Module solved.", moduleID);
+                                Debug.LogFormat("[Knot Wires{0} #{1}] Button released on white. Module solved.", moduleID);
                             }
                             else
                             {
                                 module.HandleStrike();
-                                Debug.LogFormat("[Knot Wires #{0}] Button released on {1}. Special case applies.", moduleID, new string[] { "red", "green", "blue", "cyan", "magenta", "yellow" }[submissions[0]]);
+                                Debug.LogFormat("[Knot Wires{0} #{1}] Button released on {2}. Special case applies.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "red", "green", "blue", "cyan", "magenta", "yellow" }[submissions[0]]);
                             }
                         else if (screenints[1] == 6)
                         {
                             pos[4] = pos[0];
                             pos[5] = pos[1];
-                            Debug.LogFormat("[Knot Wires #{0}] Button released on white. Resetting.", moduleID);
+                            Debug.LogFormat("[Knot Wires{0} #{1}] Button released on white. Resetting.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID);
                         }
                         else
                         {
@@ -1068,23 +1068,23 @@ public class KnotWiresScript : MonoBehaviour {
                             switch (dir[screenints[1]])
                             {
                                 case 0:
-                                    if (maze[pos[4] * 2, (pos[5] * 2) + 1] == 'X') { module.HandleStrike(); Debug.LogFormat("[Knot Wires #{0}] Button {1}{2}. Hit wall north of {3}{4}.", moduleID, screenints[1] != 6 ? "released on " : "", new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "tapped" }[screenints[1]], "ABCDEFG"[pos[5]], pos[4] + 1);}
-                                    else { pos[4]--; Debug.LogFormat("[Knot Wires #{0}] Button {1}{2}. Moving north to {3}{4}.", moduleID, screenints[1] != 6 ? "released on " : "", new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "tapped" }[screenints[1]], "ABCDEFG"[pos[5]], pos[4] + 1);}
+                                    if (maze[pos[4] * 2, (pos[5] * 2) + 1] == 'X') { module.HandleStrike(); Debug.LogFormat("[Knot Wires{0} #{1}] Button {2}{3}. Hit wall north of {4}{5}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, screenints[1] != 6 ? "released on " : "", new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "tapped" }[screenints[1]], "ABCDEFG"[pos[5]], pos[4] + 1);}
+                                    else { pos[4]--; Debug.LogFormat("[Knot Wires{0} #{1}] Button {2}{3}. Moving north to {4}{5}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, screenints[1] != 6 ? "released on " : "", new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "tapped" }[screenints[1]], "ABCDEFG"[pos[5]], pos[4] + 1);}
                                     break;
                                 case 1:
-                                    if (maze[(pos[4] * 2) + 1, (pos[5] * 2) + 2] == 'X') { module.HandleStrike(); Debug.LogFormat("[Knot Wires #{0}] Button {1}{2}. Hit wall east of {3}{4}.", moduleID, screenints[1] != 6 ? "released on " : "", new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "tapped" }[screenints[1]], "ABCDEFG"[pos[5]], pos[4] + 1);}
-                                    else { pos[5]++; Debug.LogFormat("[Knot Wires #{0}] Button {1}{2}. Moving east to {3}{4}.", moduleID, screenints[1] != 6 ? "released on " : "", new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "tapped" }[screenints[1]], "ABCDEFG"[pos[5]], pos[4] + 1);}
+                                    if (maze[(pos[4] * 2) + 1, (pos[5] * 2) + 2] == 'X') { module.HandleStrike(); Debug.LogFormat("[Knot Wires{0} #{1}] Button {2}{3}. Hit wall east of {4}{5}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, screenints[1] != 6 ? "released on " : "", new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "tapped" }[screenints[1]], "ABCDEFG"[pos[5]], pos[4] + 1);}
+                                    else { pos[5]++; Debug.LogFormat("[Knot Wires{0} #{1}] Button {2}{3}. Moving east to {4}{5}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, screenints[1] != 6 ? "released on " : "", new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "tapped" }[screenints[1]], "ABCDEFG"[pos[5]], pos[4] + 1);}
                                     break;
                                 case 2:
-                                    if (maze[(pos[4] * 2) + 2, (pos[5] * 2) + 1] == 'X') { module.HandleStrike(); Debug.LogFormat("[Knot Wires #{0}] Button {1}{2}. Hit wall south of {3}{4}.", moduleID, screenints[1] != 6 ? "released on " : "", new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "tapped" }[screenints[1]], "ABCDEFG"[pos[5]], pos[4] + 1);}
-                                    else { pos[4]++; Debug.LogFormat("[Knot Wires #{0}] Button {1}{2}. Moving south to {3}{4}.", moduleID, screenints[1] != 6 ? "released on " : "", new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "tapped" }[screenints[1]], "ABCDEFG"[pos[5]], pos[4] + 1);}
+                                    if (maze[(pos[4] * 2) + 2, (pos[5] * 2) + 1] == 'X') { module.HandleStrike(); Debug.LogFormat("[Knot Wires{0} #{1}] Button {2}{3}. Hit wall south of {4}{5}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, screenints[1] != 6 ? "released on " : "", new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "tapped" }[screenints[1]], "ABCDEFG"[pos[5]], pos[4] + 1);}
+                                    else { pos[4]++; Debug.LogFormat("[Knot Wires{0} #{1}] Button {2}{3}. Moving south to {4}{5}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, screenints[1] != 6 ? "released on " : "", new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "tapped" }[screenints[1]], "ABCDEFG"[pos[5]], pos[4] + 1);}
                                     break;
                                 default:
-                                    if (maze[(pos[4] * 2) + 1, pos[5] * 2] == 'X') { module.HandleStrike(); Debug.LogFormat("[Knot Wires #{0}] Button {1}{2}. Hit wall west of {3}{4}.", moduleID, screenints[1] != 6 ? "released on " : "", new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "tapped" }[screenints[1]], "ABCDEFG"[pos[5]], pos[4] + 1);}
-                                    else { pos[5]--; Debug.LogFormat("[Knot Wires #{0}] Button {1}{2}. Moving west to {3}{4}.", moduleID, screenints[1] != 6 ? "released on " : "", new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "tapped" }[screenints[1]], "ABCDEFG"[pos[5]], pos[4] + 1);}
+                                    if (maze[(pos[4] * 2) + 1, pos[5] * 2] == 'X') { module.HandleStrike(); Debug.LogFormat("[Knot Wires{0} #{1}] Button {2}{3}. Hit wall west of {4}{5}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, screenints[1] != 6 ? "released on " : "", new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "tapped" }[screenints[1]], "ABCDEFG"[pos[5]], pos[4] + 1);}
+                                    else { pos[5]--; Debug.LogFormat("[Knot Wires{0} #{1}] Button {2}{3}. Moving west to {4}{5}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, screenints[1] != 6 ? "released on " : "", new string[] { "red", "green", "blue", "cyan", "magenta", "yellow", "tapped" }[screenints[1]], "ABCDEFG"[pos[5]], pos[4] + 1);}
                                     break;
                             }
-                            if(pos[4] == pos[2] && pos[5] == pos[3]) { module.HandlePass(); moduleSolved = true;  Debug.LogFormat("[Knot Wires #{0}] Exit reached.", moduleID);}
+                            if(pos[4] == pos[2] && pos[5] == pos[3]) { module.HandlePass(); moduleSolved = true;  Debug.LogFormat("[Knot Wires{0} #{1}] Exit reached.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID);}
                         }
                         break;
                     case 4:
@@ -1095,11 +1095,11 @@ public class KnotWiresScript : MonoBehaviour {
                                 relseq = true;
                                 for (int i = 0; i < 3; i++)
                                     StartCoroutine(ms[i]);
-                                Debug.LogFormat("[Knot Wires #{0}] {1} submitted. Telegraphs acivated.", moduleID, new string[] { "Black", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[screenints[1] + 1]);
+                                Debug.LogFormat("[Knot Wires{0} #{1}] {2} submitted. Telegraphs acivated.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "Black", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[screenints[1] + 1]);
                             }
                             else
                             {
-                                Debug.LogFormat("[Knot Wires #{0}] {1} submitted. {2} expected.", moduleID, new string[] { "Black", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[screenints[1] + 1], new string[] { "Black", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[morsesub[0]]);
+                                Debug.LogFormat("[Knot Wires{0} #{1}] {2} submitted. {3} expected.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "Black", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[screenints[1] + 1], new string[] { "Black", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[morsesub[0]]);
                                 module.HandleStrike();
                             }
                         }
@@ -1109,12 +1109,12 @@ public class KnotWiresScript : MonoBehaviour {
                             {
                                 if (morsesub.Count() > 1)
                                 {
-                                    Debug.LogFormat("[Knot Wires #{0}] {1} submitted. Submit {2} next.", moduleID, new string[] { "Black", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[morsesub[0]], new string[] { "Black", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[morsesub[1]]);
+                                    Debug.LogFormat("[Knot Wires{0} #{1}] {2} submitted. Submit {3} next.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "Black", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[morsesub[0]], new string[] { "Black", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[morsesub[1]]);
                                     morsesub.RemoveAt(0);
                                 }
                                 else
                                 {
-                                    Debug.LogFormat("[Knot Wires #{0}] {1} submitted. Sequence complete.", moduleID, new string[] { "Black", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[morsesub[0]]);
+                                    Debug.LogFormat("[Knot Wires{0} #{1}] {2} submitted. Sequence complete.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "Black", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[morsesub[0]]);
                                     for (int i = 0; i < 3; i++)
                                     {
                                         StopCoroutine(ms[i]);
@@ -1126,7 +1126,7 @@ public class KnotWiresScript : MonoBehaviour {
                             }
                             else
                             {
-                                Debug.LogFormat("[Knot Wires #{0}] {1} submitted. {2} expected.", moduleID, new string[] { "Black", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[screenints[1] + 1], new string[] { "Black", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[morsesub[0]]);
+                                Debug.LogFormat("[Knot Wires{0} #{1}] {2} submitted. {3} expected.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "Black", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[screenints[1] + 1], new string[] { "Black", "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[morsesub[0]]);
                                 relseq = false;
                                 for (int i = 0; i < 3; i++)
                                 {
@@ -1173,7 +1173,7 @@ public class KnotWiresScript : MonoBehaviour {
                                 default: accept = timedigs[3] == new int[] { 1, 7, 6, 5, 2, 3, 4 }[colints[5]]; break;
                             }
                             int stage = 3 - answer.Count();
-                            Debug.LogFormat("[Knot Wires #{0}] Button tapped at {1}, this {2} the {3} condition.", moduleID, info.GetFormattedTime(), accept ? "satisfies" : "does not satisfy", new string[] { "first", "second", "third" }[stage]);
+                            Debug.LogFormat("[Knot Wires{0} #{1}] Button tapped at {2}, this {3} the {4} condition.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, info.GetFormattedTime(), accept ? "satisfies" : "does not satisfy", new string[] { "first", "second", "third" }[stage]);
                             if (accept)
                             {
                                 colints[stage] = -1;
@@ -1198,14 +1198,14 @@ public class KnotWiresScript : MonoBehaviour {
                             {
                                 relseq = true;
                                 Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.Switch, button.transform);
-                                Debug.LogFormat("[Knot Wires #{0}] Submission mode activated.", moduleID);
+                                Debug.LogFormat("[Knot Wires{0} #{1}] Submission mode activated.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID);
                             }
                         }
                         else
                         {                            
                             if (dispnum > 10)
                             {
-                                Debug.LogFormat("[Knot Wires #{0}] Submitted {1}.", moduleID, new string[] {"Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[screenints[1]]);
+                                Debug.LogFormat("[Knot Wires{0} #{1}] Submitted {2}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] {"Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[screenints[1]]);
                                 if (answer.Contains(screenints[1]))
                                 {
                                     answer.Remove(screenints[1]);
@@ -1221,7 +1221,7 @@ public class KnotWiresScript : MonoBehaviour {
                             else
                             {
                                 module.HandleStrike();
-                                Debug.LogFormat("[Knot Wires #{0}] Invalid display submitted.", moduleID);
+                                Debug.LogFormat("[Knot Wires{0} #{1}] Invalid display submitted.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID);
                             }
                         }
                         break;
@@ -1229,7 +1229,7 @@ public class KnotWiresScript : MonoBehaviour {
                         if (relseq)
                         {
                             int rel = relnums[dispnum];
-                            Debug.LogFormat("[Knot Wires #{0}] Eliminated {1}.", moduleID, rel);
+                            Debug.LogFormat("[Knot Wires{0} #{1}] Eliminated {2}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, rel);
                             if (crelnums.Contains(rel))
                             {
                                 displays[0].color = new Color(1, 0, 0);
@@ -1256,17 +1256,17 @@ public class KnotWiresScript : MonoBehaviour {
                         else if(dispnum > 1 && dispnum % 10 == 1)
                         {
                             relseq = true;
-                            Debug.LogFormat("[Knot Wires #{0}] The displayed sequence is: {1}", moduleID, string.Join(", ", Enumerable.Range(0, 9).Select(x => new string[] { "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White"}[factors[1, x]] + " " + factors[0, x].ToString()).ToArray()));
-                            Debug.LogFormat("[Knot Wires #{0}] The transformed sequence is: {1}", moduleID, string.Join(", ", Enumerable.Range(0, 9).Select(x => factors[2, x].ToString()).ToArray()));
+                            Debug.LogFormat("[Knot Wires{0} #{1}] The displayed sequence is: {2}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, string.Join(", ", Enumerable.Range(0, 9).Select(x => new string[] { "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White"}[factors[1, x]] + " " + factors[0, x].ToString()).ToArray()));
+                            Debug.LogFormat("[Knot Wires{0} #{1}] The transformed sequence is: {2}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, string.Join(", ", Enumerable.Range(0, 9).Select(x => factors[2, x].ToString()).ToArray()));
                             dispnum = 0;
                             string p = product.ToString();
-                            Debug.LogFormat("[Knot Wires #{0}] The product of these values is: {1}", moduleID, p);
+                            Debug.LogFormat("[Knot Wires{0} #{1}] The product of these values is: {2}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, p);
                             for (int i = 0; i < p.Length - 1; i++)
                                 dpairs.Add((p[i] - '0') * 10 + (p[i + 1] - '0'));
                             dpairs = dpairs.Distinct().ToList();
                             if (dpairs.Contains(0))
                                 dpairs.Remove(0);
-                            Debug.LogFormat("[Knot Wires #{0}] The pairs of digits in the product are: {1}", moduleID, string.Join(", ", dpairs.Select(x => x.ToString()).ToArray()));
+                            Debug.LogFormat("[Knot Wires{0} #{1}] The pairs of digits in the product are: {2}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, string.Join(", ", dpairs.Select(x => x.ToString()).ToArray()));
                             dpairs.Shuffle();
                             StartCoroutine("ElimSeq");
                         }
@@ -1280,7 +1280,7 @@ public class KnotWiresScript : MonoBehaviour {
                             displays[0].fontSize = 130;
                             displays[0].color = new Color(1, 1, 1);
                             bigdig[0] = Enumerable.Range(0, 5).Select(x => Random.Range(0, 10)).ToArray();
-                            Debug.LogFormat("[Knot Wires #{0}] Button tapped. Played sounds {1} corresponding to the number {2}.", moduleID, string.Join(", ", bigdig[0].Select(x => new string[30] { "A Mistake", "Battleship", "Boxing", "Broken Buttons", "Cheap Checkout", "Colored Squares", "Creation", "Double Expert", "Double-Oh", "Fast Math", "Graffiti Numbers", "The Heart", "Hogwarts", "The Hypercube", "Laundry", "Painting", "Quiz Buzz", "Qwirkle", "RGB Maze", "RPS Judging", "Simon Shifts", "Simon Shouts", "Sink", "Street Fighter", "The Screw", "The Swan", "Tennis", "Word Search", "Yahtzee", "Zoni" }[sounds[x]]).ToArray()), string.Join("", bigdig[0].Select(x => x.ToString()).ToArray()));
+                            Debug.LogFormat("[Knot Wires{0} #{1}] Button tapped. Played sounds {2} corresponding to the number {3}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, string.Join(", ", bigdig[0].Select(x => new string[30] { "A Mistake", "Battleship", "Boxing", "Broken Buttons", "Cheap Checkout", "Colored Squares", "Creation", "Double Expert", "Double-Oh", "Fast Math", "Graffiti Numbers", "The Heart", "Hogwarts", "The Hypercube", "Laundry", "Painting", "Quiz Buzz", "Qwirkle", "RGB Maze", "RPS Judging", "Simon Shifts", "Simon Shouts", "Sink", "Street Fighter", "The Screw", "The Swan", "Tennis", "Word Search", "Yahtzee", "Zoni" }[sounds[x]]).ToArray()), string.Join("", bigdig[0].Select(x => x.ToString()).ToArray()));
                             StartCoroutine(Soundseq());
                         }
                         else if (relseq)
@@ -1299,7 +1299,7 @@ public class KnotWiresScript : MonoBehaviour {
                                     relseq = false;
                                     displays[0].fontSize = cb ? 100 : 200;
                                 }
-                                Debug.LogFormat("[Knot Wires #{0}] Submitted {1}{2}{3}.", moduleID, bigdig[1][0], bigdig[1][1], bigdig[1][2]);
+                                Debug.LogFormat("[Knot Wires{0} #{1}] Submitted {2}{3}{4}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, bigdig[1][0], bigdig[1][1], bigdig[1][2]);
                             }
                             else
                                 return;
@@ -1308,12 +1308,12 @@ public class KnotWiresScript : MonoBehaviour {
                         {                           
                             if (screenints[0] < 1 || screenints[0] % 11 == 0)
                             {
-                                Debug.LogFormat("[Knot Wires #{0}] Button released on an invalid display.", moduleID);
+                                Debug.LogFormat("[Knot Wires{0} #{1}] Button released on an invalid display.", moduleID);
                                 module.HandleStrike();
                             }
                             else
                             {
-                                Debug.LogFormat("[Knot Wires #{0}] Button released on {1}. Played sounds {2} and {3}.", moduleID, displays[0].text, new string[30] { "A Mistake", "Battleship", "Boxing", "Broken Buttons", "Cheap Checkout", "Colored Squares", "Creation", "Double Expert", "Double-Oh", "Fast Math", "Graffiti Numbers", "The Heart", "Hogwarts", "The Hypercube", "Laundry", "Painting", "Quiz Buzz", "Qwirkle", "RGB Maze", "RPS Judging", "Simon Shifts", "Simon Shouts", "Sink", "Street Fighter", "The Screw", "The Swan", "Tennis", "Word Search", "Yahtzee", "Zoni" }[sounds[screenints[0] / 10]], new string[30] { "A Mistake", "Battleship", "Boxing", "Broken Buttons", "Cheap Checkout", "Colored Squares", "Creation", "Double Expert", "Double-Oh", "Fast Math", "Graffiti Numbers", "The Heart", "Hogwarts", "The Hypercube", "Laundry", "Painting", "Quiz Buzz", "Qwirkle", "RGB Maze", "RPS Judging", "Simon Shifts", "Simon Shouts", "Sink", "Street Fighter", "The Screw", "The Swan", "Tennis", "Word Search", "Yahtzee", "Zoni" }[sounds[screenints[0] % 10]]);
+                                Debug.LogFormat("[Knot Wires{0} #{1}] Button released on {2}. Played sounds {3} and {4}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, displays[0].text, new string[30] { "A Mistake", "Battleship", "Boxing", "Broken Buttons", "Cheap Checkout", "Colored Squares", "Creation", "Double Expert", "Double-Oh", "Fast Math", "Graffiti Numbers", "The Heart", "Hogwarts", "The Hypercube", "Laundry", "Painting", "Quiz Buzz", "Qwirkle", "RGB Maze", "RPS Judging", "Simon Shifts", "Simon Shouts", "Sink", "Street Fighter", "The Screw", "The Swan", "Tennis", "Word Search", "Yahtzee", "Zoni" }[sounds[screenints[0] / 10]], new string[30] { "A Mistake", "Battleship", "Boxing", "Broken Buttons", "Cheap Checkout", "Colored Squares", "Creation", "Double Expert", "Double-Oh", "Fast Math", "Graffiti Numbers", "The Heart", "Hogwarts", "The Hypercube", "Laundry", "Painting", "Quiz Buzz", "Qwirkle", "RGB Maze", "RPS Judging", "Simon Shifts", "Simon Shouts", "Sink", "Street Fighter", "The Screw", "The Swan", "Tennis", "Word Search", "Yahtzee", "Zoni" }[sounds[screenints[0] % 10]]);
                                 Audio.PlaySoundAtTransform("Sound" + sounds[screenints[0] / 10], transform);
                                 Audio.PlaySoundAtTransform("Sound" + sounds[screenints[0] % 10], transform);
                             }
@@ -1348,7 +1348,7 @@ public class KnotWiresScript : MonoBehaviour {
                                 case 19: next = initnums[0].Any(x => Math.Abs(x - (screenints[0] % 100)) == 3); break;
                                 default: next = initnums[0].All(x => Math.Abs(x - (screenints[0] % 100)) > 3); break;
                             }
-                            Debug.LogFormat("[Knot Wires #{0}] Button released: {1} {2} at {3}. {4}.", moduleID, new string[] { "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[screenints[1]], screenints[0], info.GetFormattedTime(), next ? "Correct" : "Incorrect");
+                            Debug.LogFormat("[Knot Wires{0} #{1}] Button released: {2} {3} at {4}. {5}.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, new string[] { "Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White" }[screenints[1]], screenints[0], info.GetFormattedTime(), next ? "Correct" : "Incorrect");
                             if (next)
                             {
                                 submissions[0]++;
@@ -1379,7 +1379,7 @@ public class KnotWiresScript : MonoBehaviour {
                             {
                                 if (zhold[1] != zhold[0])
                                 {
-                                    Debug.LogFormat("[Knot Wires #{0}] Button held when the last digit of the timer was {1}. {2} is the accepted digit.", moduleID, zhold[1], zhold[0]);
+                                    Debug.LogFormat("[Knot Wires{0} #{1}] Button held when the last digit of the timer was {2}. {3} is the accepted digit.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, zhold[1], zhold[0]);
                                     module.HandleStrike();
                                 }
                             }
@@ -1608,17 +1608,17 @@ public class KnotWiresScript : MonoBehaviour {
         int wangernum = (bigdig[0][0] * 10000) + (bigdig[0][1] * 1000) + (bigdig[0][2] * 100) + (bigdig[0][3] * 10) + bigdig[0][4];
         if (numalts[7]) { wangernum += 11111; tlog += " \u2192 " + wangernum; }
         if (wangernum < 1000) wangernum += 1000;
-        Debug.LogFormat("[Knot Wires #{0}] Applying transformations: {1}", moduleID, tlog);
+        Debug.LogFormat("[Knot Wires{0} #{1}] Applying transformations: {2}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, tlog);
         int[] rems = new int[3];
         for (int i = 0; i < 3; i++)
         {
             rems[i] = wangernum % pdivs[i];
-            Debug.LogFormat("[Knot Wires #{0}] {1} mod {2} = {3}", moduleID, wangernum, pdivs[i], rems[i]);
+            Debug.LogFormat("[Knot Wires{0} #{1}] {2} mod {3} = {4}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, wangernum, pdivs[i], rems[i]);
         }
         for (int i = 0; i < 1000; i++)
             if (i % pdivs[0] == rems[0] && i % pdivs[1] == rems[1] && i % pdivs[2] == rems[2])
                 answer.Add(i);
-        Debug.LogFormat("[Knot Wires #{0}] Valid submissions are: {1}", moduleID, string.Join(", ", answer.Select(x => x.ToString()).ToArray()));
+        Debug.LogFormat("[Knot Wires{0} #{1}] Valid submissions are: {2}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, string.Join(", ", answer.Select(x => x.ToString()).ToArray()));
         moduleSolved = false;
     }
 
@@ -1627,9 +1627,9 @@ public class KnotWiresScript : MonoBehaviour {
         bool eliminc = dpairs.Count() < 6 || Random.Range(0, 2) == 0;
         List<int> rem = Enumerable.Range(1, 100).ToList().Except(dpairs).ToList().Shuffle();
         relnums = (dpairs.Count() < 6 ? dpairs : dpairs.Take(eliminc ? 5 : 6)).Concat(rem.Take(eliminc ? 6 : 5)).ToList().Shuffle();
-        Debug.LogFormat("[Knot Wires #{0}] The sequence displays the numbers: {1}", moduleID, string.Join(", ", relnums.OrderBy(x => x).Select(x => x.ToString()).ToArray()));
+        Debug.LogFormat("[Knot Wires{0} #{1}] The sequence displays the numbers: {2}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, string.Join(", ", relnums.OrderBy(x => x).Select(x => x.ToString()).ToArray()));
         crelnums = (eliminc ? (dpairs.Count() < 6 ? dpairs : dpairs.Take(5)) : rem.Take(5)).ToArray();
-        Debug.LogFormat("[Knot Wires #{0}] Eliminate the numbers: {1}", moduleID, string.Join(", ", crelnums.Select(x => x.ToString()).OrderBy(x => x).ToArray()));
+        Debug.LogFormat("[Knot Wires{0} #{1}] Eliminate the numbers: {2}", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID, string.Join(", ", crelnums.Select(x => x.ToString()).OrderBy(x => x).ToArray()));
         while (true)
         {
             int num = relnums[dispnum];
@@ -1660,7 +1660,7 @@ public class KnotWiresScript : MonoBehaviour {
             displays[0].color = new Color32[] { new Color32(255, 0, 0, 255), new Color32(0, 255, 0, 255), new Color32(75, 75, 255, 255), new Color32(0, 255, 255, 255), new Color32(255, 0, 255, 255), new Color32(255, 255, 0, 255), new Color32(255, 255, 255, 255) }[screenints[1]];
             yield return new WaitForSeconds(1);
         }
-        Debug.LogFormat("[Knot Wires #{0}] Time's Up.", moduleID);
+        Debug.LogFormat("[Knot Wires{0} #{1}] Time's Up.", forcenum < 0 ? "" : ("-" + modsn[0].ToString()), moduleID);
         displays[0].text = "";
         displays[0].fontSize = cb ? 100 : 200;
         module.HandleStrike();
