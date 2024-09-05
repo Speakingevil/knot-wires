@@ -43,6 +43,7 @@ public class KnotWiresScript : MonoBehaviour {
     private List<int> answer = new List<int> { };
     private List<int> submissions = new List<int> { };
     private bool relseq;
+    private bool held;
     //Type Specific
     private bool[][] indconds = new bool[3][] { new bool[99], new bool[99], new bool[99] };
     private int[] startnum = new int[2];
@@ -925,8 +926,9 @@ public class KnotWiresScript : MonoBehaviour {
         }
         button.OnInteract += delegate ()
         {
-            if (!moduleSolved)
+            if (!moduleSolved && !held)
             {
+                held = true;
                 Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.BigButtonPress, button.transform);
                 if(moduletype == 0)
                     submissions.Add((int)info.GetTime() % 10);
@@ -988,8 +990,9 @@ public class KnotWiresScript : MonoBehaviour {
         };
         button.OnInteractEnded += delegate ()
         {
-            if (!moduleSolved)
+            if (!moduleSolved && held)
             {
+                held = false;
                 StopCoroutine("Display");
                 Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.BigButtonRelease, button.transform);
                 button.AddInteractionPunch();
@@ -1666,5 +1669,217 @@ public class KnotWiresScript : MonoBehaviour {
         module.HandleStrike();
         relseq = false;
         shownum[0] = new bool[7];
+    }
+
+    //twitch plays
+    #pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"!{0} hold/release/tap (cond1) (cond2)... [Holds/releases/taps the button (optionally when any of the conditions are met)] | !{0} colorblind [Toggles colorblind mode] | Valid conditions include numbers on the display (i.e. N67, N220), colors of numbers on the display (i.e. CR, CY), solid colors on the display (i.e. SR, SY), position in the sequence (i.e. P1, P31), last digit or last two digits of the bomb timer (i.e. L5, L49), and exact bomb time (i.e. T4:56, T128:31)";
+    #pragma warning restore 414
+    IEnumerator ProcessTwitchCommand(string command)
+    {
+        if (command.EqualsIgnoreCase("colorblind"))
+        {
+            yield return null;
+            cb = !cb;
+            if (cb)
+            {
+                if (displays[0].fontSize == 130)
+                    displays[0].fontSize = 70;
+                else
+                    displays[0].fontSize = 100;
+                for (int i = 0; i < 6; i++)
+                    cbtexts[i].text = "RGBCMYW"[colints[i]].ToString();
+            }
+            else
+            {
+                if (displays[0].fontSize == 70)
+                    displays[0].fontSize = 130;
+                else
+                    displays[0].fontSize = 200;
+                for (int i = 0; i < 6; i++)
+                    cbtexts[i].text = "";
+            }
+            if (held && screenints[0] == -1)
+                displays[0].text = cb ? "RGBCMYW"[screenints[1]].ToString() : string.Empty;
+            else if (held)
+                displays[0].text = (screenints[0] < 10 ? "0" : "") + screenints[0].ToString() + (cb ? " " + "RGBCMYW"[screenints[1]].ToString() : "");
+            else if (moduletype == 9)
+                displays[0].text = (screenints[0] < 100 ? "0" : (screenints[0] < 10 ? "00" : "")) + screenints[0].ToString() + (cb ? " " + "RGBCMYW"[screenints[1]].ToString() : "");
+        }
+        else if (command.EqualsIgnoreCase("hold"))
+        {
+            if (held)
+            {
+                yield return "sendtochaterror The button is already being held!";
+                yield break;
+            }
+            yield return null;
+            button.OnInteract();
+        }
+        else if (command.EqualsIgnoreCase("release"))
+        {
+            if (!held)
+            {
+                yield return "sendtochaterror The button is not being held!";
+                yield break;
+            }
+            yield return null;
+            button.OnInteractEnded();
+        }
+        else if (command.EqualsIgnoreCase("tap"))
+        {
+            if (held)
+            {
+                yield return "sendtochaterror The button cannot be tapped while it is being held!";
+                yield break;
+            }
+            yield return null;
+            button.OnInteract();
+            button.OnInteractEnded();
+        }
+        else
+        {
+            string[] parameters = command.Split(' ');
+            if (parameters[0].ToLowerInvariant().EqualsAny("tap", "hold", "release"))
+            {
+                for (int i = 1; i < parameters.Length; i++)
+                {
+                    if (parameters[i].Length >= 2)
+                    {
+                        if (parameters[i].ToLowerInvariant()[0].Equals('n'))
+                        {
+                            int temp;
+                            if (int.TryParse(parameters[i].Substring(1), out temp))
+                            {
+                                if (temp >= 0 && temp <= 999)
+                                    continue;
+                            }
+                        }
+                        else if (parameters[i].ToLowerInvariant()[0].Equals('l'))
+                        {
+                            int temp;
+                            if (int.TryParse(parameters[i].Substring(1), out temp))
+                            {
+                                if (temp >= 0 && temp <= 59)
+                                    continue;
+                            }
+                        }
+                        else if (parameters[i].ToLowerInvariant()[0].Equals('c') || parameters[i].ToLowerInvariant()[0].Equals('s'))
+                        {
+                            string color = parameters[i].ToLowerInvariant().Substring(1);
+                            if ("rgbcmyw".Contains(color))
+                                continue;
+                        }
+                        else if (parameters[i].ToLowerInvariant()[0].Equals('p'))
+                        {
+                            int temp;
+                            if (int.TryParse(parameters[i].Substring(1), out temp))
+                            {
+                                if (temp >= 1)
+                                    continue;
+                            }
+                        }
+                        else if (parameters[i].ToLowerInvariant()[0].Equals('t'))
+                        {
+                            string time = parameters[i].Substring(1);
+                            string[] timeSplit = time.Split(':');
+                            if (timeSplit.Length == 2 && timeSplit[0].Length >= 2 && timeSplit[1].Length == 2)
+                            {
+                                int temp;
+                                if (int.TryParse(timeSplit[0], out temp))
+                                {
+                                    if (temp >= 0)
+                                    {
+                                        if (int.TryParse(timeSplit[1], out temp))
+                                        {
+                                            if (temp >= 0 && temp <= 59)
+                                                continue;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    yield return "sendtochaterror!f Invalid condition: " + parameters[i];
+                    yield break;
+                }
+                if (parameters[0].ToLowerInvariant().Equals("hold") && held)
+                {
+                    yield return "sendtochaterror The button is already being held!";
+                    yield break;
+                }
+                if (parameters[0].ToLowerInvariant().Equals("tap") && held)
+                {
+                    yield return "sendtochaterror The button cannot be tapped while it is being held!";
+                    yield break;
+                }
+                if (parameters[0].ToLowerInvariant().Equals("release") && !held)
+                {
+                    yield return "sendtochaterror The button is not being held!";
+                    yield break;
+                }
+                yield return null;
+                bool goodToGo = false;
+                while (!goodToGo)
+                {
+                    yield return "trycancel";
+                    for (int i = 1; i < parameters.Length; i++)
+                    {
+                        if (parameters[i].ToLowerInvariant()[0].Equals('n'))
+                        {
+                            int temp = int.Parse(parameters[i].Substring(1));
+                            if (screenints[0] == temp || (moduletype == 8 && int.Parse(bigdig[1].Join("")) == temp))
+                                goodToGo = true;
+                        }
+                        else if (parameters[i].ToLowerInvariant()[0].Equals('l'))
+                        {
+                            int temp = int.Parse(parameters[i].Substring(1));
+                            if ((parameters[i].Length == 2 && (int)info.GetTime() % 10 == temp) || (parameters[i].Length == 3 && (int)info.GetTime() % 60 == temp))
+                                goodToGo = true;
+                        }
+                        else if (parameters[i].ToLowerInvariant()[0].Equals('c'))
+                        {
+                            string color = parameters[i].ToLowerInvariant().Substring(1);
+                            if ("rgbcmyw".IndexOf(color) == screenints[1] && screenints[0] > -1)
+                                goodToGo = true;
+                        }
+                        else if (parameters[i].ToLowerInvariant()[0].Equals('s'))
+                        {
+                            string color = parameters[i].ToLowerInvariant().Substring(1);
+                            if ("rgbcmyw".IndexOf(color) == screenints[1] && screenints[0] == -1)
+                                goodToGo = true;
+                        }
+                        else if (parameters[i].ToLowerInvariant()[0].Equals('p'))
+                        {
+                            int temp = int.Parse(parameters[i].Substring(1));
+                            if (dispnum == temp)
+                                goodToGo = true;
+                        }
+                        else if (parameters[i].ToLowerInvariant()[0].Equals('t'))
+                        {
+                            string time = parameters[i].Substring(1);
+                            string[] timeSplit = time.Split(':');
+                            int temp = int.Parse(timeSplit[0]);
+                            int temp2 = int.Parse(timeSplit[1]);
+                            if ((temp == 0 && (int)info.GetTime() == temp2) || (temp > 0 && info.GetFormattedTime() == (temp.ToString("00") + ":" + temp2.ToString("00"))))
+                                goodToGo = true;
+                        }
+                    }
+                }
+                switch (parameters[0].ToLowerInvariant())
+                {
+                    case "hold":
+                        button.OnInteract();
+                        break;
+                    case "release":
+                        button.OnInteractEnded();
+                        break;
+                    default:
+                        button.OnInteract();
+                        button.OnInteractEnded();
+                        break;
+                }
+            }
+        }
     }
 }
